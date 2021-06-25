@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
 
     public void testmove()
     {
-        MoveMe(1);
+        MoveMe(2);
     }
 
     private void ReturnOnStart()
