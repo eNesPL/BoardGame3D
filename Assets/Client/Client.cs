@@ -47,7 +47,7 @@ public class Client
                 try
                 {
 
-                    s.Send(Encoding.ASCII.GetBytes("Test"));
+                    s.Send(Encoding.ASCII.GetBytes("?"));
                 }
                 catch
                 {
@@ -57,6 +57,24 @@ public class Client
             }
         }
 
+    }
+
+    public void Test()
+    {
+            try
+            {
+                int bytesRec = 0;
+                byte[] msg = Encoding.ASCII.GetBytes("JustTestMe");
+                s.Send(msg);
+                bytesRec = s.Receive(bytes);
+                while (bytesRec == 0) { }
+                string cmd = Encoding.ASCII.GetString(bytes, 0, bytesRec).Replace("?","");
+                Debug.Log(cmd);
+            }
+            catch
+            {
+                Debug.Log("Connection lost");
+            }
     }
 
     public int GetDice()

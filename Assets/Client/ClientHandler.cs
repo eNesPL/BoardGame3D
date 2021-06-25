@@ -65,4 +65,11 @@ public class ClientHandler : MonoBehaviour
         }).Start();
         
     }
+
+    public void SendTest()
+    {
+        new Thread(() => {
+            client.Test();
+        }).Start();
+    }
 }
