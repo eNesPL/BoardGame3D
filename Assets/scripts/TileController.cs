@@ -6,6 +6,7 @@ using UnityEngine;
 public class TileController : MonoBehaviour
 {
     // Start is called before the first frame update
+    [SerializeField]
     List<GameObject> ListOfTiles = new List<GameObject>();
     public Dictionary<int, GameObject> Tiles = new Dictionary<int, GameObject>(); 
     void Start()
