@@ -7,7 +7,9 @@ public class Tile : MonoBehaviour
     // Start is called before the first frame update
     [SerializeField]
     private int tileID = 0;
+    [SerializeField]
     private bool occupied = false;
+    [SerializeField]
     private PlayerController PlayerOnMe = null;
     void Start()
     {
@@ -19,12 +21,20 @@ public class Tile : MonoBehaviour
     {
         
     }
-    public void StayOnMe()
+
+
+    public void StayOnMe(PlayerController Player)
     {
         if (occupied)
         {
             PlayerOnMe.KillMe();
+            this.PlayerOnMe = Player;
         }
+        else
+        {
+            this.PlayerOnMe = Player;
+        }
+        ChangeTileStatus();
     }
     public int GetID()
     {
@@ -42,5 +52,6 @@ public class Tile : MonoBehaviour
         {
             PlayerOnMe = null;
         }
+        
     }
 }

@@ -19,11 +19,15 @@ public class PlayerController : MonoBehaviour
     ThreadController ThC = null;
     private Vector3 goal;
     private bool isMoving = false;
+    private int StartingTile = 1;
     void Start()
     {
         TC = GameObject.FindObjectOfType<TileController>();
         ThC = GameObject.Find("ThreadController").GetComponent<ThreadController>();
         goal = transform.position;
+        GameObject StarterTile;
+        TC.Tiles.TryGetValue(StartingTile, out StarterTile);
+        StarterTile.GetComponent<Tile>().ChangeTileStatus();
     }
 
     // Update is called once per frame
@@ -56,29 +60,37 @@ public class PlayerController : MonoBehaviour
     }
     IEnumerator MoveMe(int diceroll)
     {
-        for (int i = 1; i <= diceroll;i++)
+        if (isMoving == false)
         {
-            if (isMoving == false)
+            for (int i = 1; i <= diceroll; i++)
             {
-                Debug.Log("TileID: " + TileID);
-                Debug.Log("i: " + i);
-                GameObject nextTile;
-                Debug.Log("NEXT TileIDB: " + (TileID + i));
-                if (TileID + i > 40)
+                if (isMoving == false)
                 {
-                    TileID = 0;
+                    int NextTileID = TileID + 1;
+                    Debug.Log("TileID: " + TileID);
+                    GameObject nextTile;
+                    GameObject thisTile;
+                    Debug.Log("NEXT TileIDA: " + NextTileID);
+                    if (NextTileID > 40)
+                    {
+                        NextTileID = NextTileID - 40;
+                    }
+                    Debug.Log("NEXT TileIDB: " + NextTileID);
+                    TC.Tiles.TryGetValue(NextTileID, out nextTile);
+                    goal = nextTile.transform.position;
+                    isMoving = true;
+                    TC.Tiles.TryGetValue(TileID, out thisTile);
+                    thisTile.GetComponent<Tile>().ChangeTileStatus();
+                    nextTile.GetComponent<Tile>().StayOnMe(this);
+                    while (isMoving)
+                    {
+                        yield return null;
+                    }
+                    this.TileID += 1;
                 }
-                Debug.Log("NEXT TileIDA: " + (TileID + i));
-                TC.Tiles.TryGetValue(TileID + i, out nextTile);
-                goal = nextTile.transform.position;
-                isMoving = true;
-                while (isMoving)
-                {
-                    yield return null;
-                }
-            }
-        }
-        TileID = TileID + diceroll;
 
+            }
+            
+        }
     }
 }

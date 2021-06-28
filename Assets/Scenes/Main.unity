@@ -194,6 +194,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: WinningTile (13)
       objectReference: {fileID: 0}
+    - target: {fileID: 7719866896147967993, guid: 57a64ec4ce2a78c4dbb9ff95145dc3d0,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9092075456030301076, guid: 57a64ec4ce2a78c4dbb9ff95145dc3d0,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -248,6 +253,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileID: 28
+  occupied: 0
+  PlayerOnMe: {fileID: 0}
 --- !u!65 &90643530
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -256,7 +263,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 90643527}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -315,6 +322,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 938475407}
     m_Modifications:
+    - target: {fileID: 6900992942839773680, guid: f85477429d718ba43bdfe9adb9f77682,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6900992942839773681, guid: f85477429d718ba43bdfe9adb9f77682,
         type: 3}
       propertyPath: tileID
@@ -444,6 +456,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileID: 12
+  occupied: 0
+  PlayerOnMe: {fileID: 0}
 --- !u!65 &128418649
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -452,7 +466,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 128418646}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -582,100 +596,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 179802880}
   m_CullTransparentMesh: 0
---- !u!1 &193278645
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 193278646}
-  - component: {fileID: 193278649}
-  - component: {fileID: 193278648}
-  - component: {fileID: 193278647}
-  m_Layer: 0
-  m_Name: PlayerModel
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 1
-  m_IsActive: 1
---- !u!4 &193278646
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 193278645}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.5, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 423522464}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!136 &193278647
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 193278645}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!23 &193278648
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 193278645}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
---- !u!33 &193278649
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 193278645}
-  m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &214070603
 GameObject:
   m_ObjectHideFlags: 0
@@ -737,7 +657,6 @@ GameObject:
   - component: {fileID: 284264452}
   - component: {fileID: 284264456}
   - component: {fileID: 284264455}
-  - component: {fileID: 284264454}
   - component: {fileID: 284264453}
   m_Layer: 0
   m_Name: Tile (14)
@@ -773,19 +692,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileID: 18
---- !u!65 &284264454
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 284264451}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  occupied: 0
+  PlayerOnMe: {fileID: 0}
 --- !u!23 &284264455
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -880,6 +788,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileID: 39
+  occupied: 0
+  PlayerOnMe: {fileID: 0}
 --- !u!65 &313332791
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -888,7 +798,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 313332788}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -987,6 +897,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileID: 6
+  occupied: 0
+  PlayerOnMe: {fileID: 0}
 --- !u!65 &341038755
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -995,7 +907,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 341038752}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -1114,6 +1026,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: WinningTile (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 7719866896147967993, guid: 57a64ec4ce2a78c4dbb9ff95145dc3d0,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9092075456030301076, guid: 57a64ec4ce2a78c4dbb9ff95145dc3d0,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -1194,6 +1111,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: WinningTile (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 7719866896147967993, guid: 57a64ec4ce2a78c4dbb9ff95145dc3d0,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 57a64ec4ce2a78c4dbb9ff95145dc3d0, type: 3}
 --- !u!1 &374959485
@@ -1229,6 +1151,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileID: 4
+  occupied: 0
+  PlayerOnMe: {fileID: 0}
 --- !u!65 &374959487
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1237,7 +1161,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 374959485}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -1350,6 +1274,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileID: 8
+  occupied: 0
+  PlayerOnMe: {fileID: 0}
 --- !u!65 &380173852
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1358,7 +1284,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 380173849}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -1457,6 +1383,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileID: 15
+  occupied: 0
+  PlayerOnMe: {fileID: 0}
 --- !u!65 &386319637
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1465,7 +1393,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 386319634}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -1599,55 +1527,25 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Tile
       objectReference: {fileID: 0}
+    - target: {fileID: 5803073392263838000, guid: 89e0ab89a9e8b7c479cd25e1db4e707d,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 89e0ab89a9e8b7c479cd25e1db4e707d, type: 3}
---- !u!1 &423522459
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 423522464}
-  - component: {fileID: 423522460}
-  m_Layer: 0
-  m_Name: Player
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &423522460
+--- !u!114 &423522460 stripped
 MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 5379989353007463626, guid: f70af5680db405a4fbfb4e2ff0af19b8,
+    type: 3}
+  m_PrefabInstance: {fileID: 5379989353124252758}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 423522459}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: def9d37c651712b4897483db366fd83e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerID: 1
-  TileID: 1
-  DiceRoll: 5
---- !u!4 &423522464
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 423522459}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.5, y: 0, z: 11.96}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 193278646}
-  m_Father: {fileID: 0}
-  m_RootOrder: 8
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &425185848
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1655,6 +1553,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 938475407}
     m_Modifications:
+    - target: {fileID: 6900992942839773680, guid: f85477429d718ba43bdfe9adb9f77682,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6900992942839773681, guid: f85477429d718ba43bdfe9adb9f77682,
         type: 3}
       propertyPath: tileID
@@ -1790,6 +1693,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileID: 29
+  occupied: 0
+  PlayerOnMe: {fileID: 0}
 --- !u!65 &607300927
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1798,7 +1703,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 607300924}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -1903,6 +1808,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileID: 37
+  occupied: 0
+  PlayerOnMe: {fileID: 0}
 --- !u!65 &649962355
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1911,7 +1818,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 649962352}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -2010,6 +1917,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileID: 13
+  occupied: 0
+  PlayerOnMe: {fileID: 0}
 --- !u!65 &669860578
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2018,7 +1927,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 669860575}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -2117,6 +2026,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileID: 19
+  occupied: 0
+  PlayerOnMe: {fileID: 0}
 --- !u!65 &689221355
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2125,7 +2036,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 689221352}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -2414,6 +2325,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: WinningTile (11)
       objectReference: {fileID: 0}
+    - target: {fileID: 7719866896147967993, guid: 57a64ec4ce2a78c4dbb9ff95145dc3d0,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9092075456030301076, guid: 57a64ec4ce2a78c4dbb9ff95145dc3d0,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -2540,7 +2456,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 757604833}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -2788,6 +2704,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: WinningTile (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7719866896147967993, guid: 57a64ec4ce2a78c4dbb9ff95145dc3d0,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9092075456030301076, guid: 57a64ec4ce2a78c4dbb9ff95145dc3d0,
         type: 3}
@@ -3065,6 +2986,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: WinningTile (10)
       objectReference: {fileID: 0}
+    - target: {fileID: 7719866896147967993, guid: 57a64ec4ce2a78c4dbb9ff95145dc3d0,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9092075456030301076, guid: 57a64ec4ce2a78c4dbb9ff95145dc3d0,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -3139,6 +3065,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: WinningTile (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 7719866896147967993, guid: 57a64ec4ce2a78c4dbb9ff95145dc3d0,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9092075456030301076, guid: 57a64ec4ce2a78c4dbb9ff95145dc3d0,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -3212,6 +3143,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: WinningTile (9)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7719866896147967993, guid: 57a64ec4ce2a78c4dbb9ff95145dc3d0,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9092075456030301076, guid: 57a64ec4ce2a78c4dbb9ff95145dc3d0,
         type: 3}
@@ -3453,6 +3389,11 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Tile
       objectReference: {fileID: 0}
+    - target: {fileID: 5803073392263838000, guid: 89e0ab89a9e8b7c479cd25e1db4e707d,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 89e0ab89a9e8b7c479cd25e1db4e707d, type: 3}
 --- !u!1 &963194225
@@ -3651,6 +3592,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileID: 25
+  occupied: 0
+  PlayerOnMe: {fileID: 0}
 --- !u!65 &992973087
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3659,7 +3602,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 992973084}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -3758,6 +3701,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileID: 36
+  occupied: 0
+  PlayerOnMe: {fileID: 0}
 --- !u!65 &1031129219
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3766,7 +3711,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1031129216}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -3908,6 +3853,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileID: 24
+  occupied: 0
+  PlayerOnMe: {fileID: 0}
 --- !u!65 &1124319016
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3916,7 +3863,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1124319013}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -4021,6 +3968,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileID: 7
+  occupied: 0
+  PlayerOnMe: {fileID: 0}
 --- !u!65 &1254677466
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4029,7 +3978,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1254677463}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -4134,6 +4083,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileID: 38
+  occupied: 0
+  PlayerOnMe: {fileID: 0}
 --- !u!65 &1302402403
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4142,7 +4093,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1302402400}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -4241,6 +4192,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileID: 27
+  occupied: 0
+  PlayerOnMe: {fileID: 0}
 --- !u!65 &1305344298
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4249,7 +4202,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1305344295}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -4348,6 +4301,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileID: 34
+  occupied: 0
+  PlayerOnMe: {fileID: 0}
 --- !u!65 &1336214742
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4356,7 +4311,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1336214739}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -4441,6 +4396,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileID: 5
+  occupied: 0
+  PlayerOnMe: {fileID: 0}
 --- !u!65 &1349083260
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4449,7 +4406,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1349083258}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -4712,6 +4669,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: WinningTile (8)
       objectReference: {fileID: 0}
+    - target: {fileID: 7719866896147967993, guid: 57a64ec4ce2a78c4dbb9ff95145dc3d0,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9092075456030301076, guid: 57a64ec4ce2a78c4dbb9ff95145dc3d0,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -4758,6 +4720,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileID: 3
+  occupied: 0
+  PlayerOnMe: {fileID: 0}
 --- !u!65 &1436497356
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4766,7 +4730,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1436497354}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -4879,6 +4843,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileID: 23
+  occupied: 0
+  PlayerOnMe: {fileID: 0}
 --- !u!65 &1460099939
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4887,7 +4853,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1460099936}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -4986,6 +4952,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileID: 26
+  occupied: 0
+  PlayerOnMe: {fileID: 0}
 --- !u!65 &1525353911
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4994,7 +4962,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1525353908}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -5117,6 +5085,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileID: 14
+  occupied: 0
+  PlayerOnMe: {fileID: 0}
 --- !u!65 &1646855709
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5125,7 +5095,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1646855706}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -5248,6 +5218,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileID: 16
+  occupied: 0
+  PlayerOnMe: {fileID: 0}
 --- !u!65 &1737833685
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5256,7 +5228,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1737833682}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -5361,6 +5333,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileID: 33
+  occupied: 0
+  PlayerOnMe: {fileID: 0}
 --- !u!65 &1752975078
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5369,7 +5343,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1752975075}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -5468,6 +5442,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileID: 17
+  occupied: 0
+  PlayerOnMe: {fileID: 0}
 --- !u!65 &1757990244
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5476,7 +5452,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1757990241}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -5581,6 +5557,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileID: 9
+  occupied: 0
+  PlayerOnMe: {fileID: 0}
 --- !u!65 &1769617978
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5589,7 +5567,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1769617975}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -5838,6 +5816,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: WinningTile (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 7719866896147967993, guid: 57a64ec4ce2a78c4dbb9ff95145dc3d0,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9092075456030301076, guid: 57a64ec4ce2a78c4dbb9ff95145dc3d0,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -5892,6 +5875,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileID: 32
+  occupied: 0
+  PlayerOnMe: {fileID: 0}
 --- !u!65 &1816939766
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5900,7 +5885,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1816939763}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -5993,7 +5978,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1917273911}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -6092,6 +6077,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileID: 35
+  occupied: 0
+  PlayerOnMe: {fileID: 0}
 --- !u!65 &1918131694
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6100,7 +6087,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1918131691}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -6199,6 +6186,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileID: 22
+  occupied: 0
+  PlayerOnMe: {fileID: 0}
 --- !u!65 &1949901460
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6207,7 +6196,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1949901457}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -6300,7 +6289,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1951273635}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -6462,6 +6451,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: WinningTile (12)
       objectReference: {fileID: 0}
+    - target: {fileID: 7719866896147967993, guid: 57a64ec4ce2a78c4dbb9ff95145dc3d0,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9092075456030301076, guid: 57a64ec4ce2a78c4dbb9ff95145dc3d0,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -6510,7 +6504,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2066059202}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -6644,6 +6638,11 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Tile
       objectReference: {fileID: 0}
+    - target: {fileID: 5803073392263838000, guid: 89e0ab89a9e8b7c479cd25e1db4e707d,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 89e0ab89a9e8b7c479cd25e1db4e707d, type: 3}
 --- !u!1001 &1113768664004258313
@@ -6728,6 +6727,11 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Tile
       objectReference: {fileID: 0}
+    - target: {fileID: 5803073392263838000, guid: 89e0ab89a9e8b7c479cd25e1db4e707d,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 89e0ab89a9e8b7c479cd25e1db4e707d, type: 3}
 --- !u!1001 &3707695371424589962
@@ -6737,6 +6741,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 938475407}
     m_Modifications:
+    - target: {fileID: 3707695370736604600, guid: c1d9d1152fabd044b857c7da4abe2ae7,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3707695370736604603, guid: c1d9d1152fabd044b857c7da4abe2ae7,
         type: 3}
       propertyPath: m_Name
@@ -6804,6 +6813,75 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c1d9d1152fabd044b857c7da4abe2ae7, type: 3}
+--- !u!1001 &5379989353124252758
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5379989353007463629, guid: f70af5680db405a4fbfb4e2ff0af19b8,
+        type: 3}
+      propertyPath: m_Name
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 5379989353007463670, guid: f70af5680db405a4fbfb4e2ff0af19b8,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5379989353007463670, guid: f70af5680db405a4fbfb4e2ff0af19b8,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5379989353007463670, guid: f70af5680db405a4fbfb4e2ff0af19b8,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5379989353007463670, guid: f70af5680db405a4fbfb4e2ff0af19b8,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 11.96
+      objectReference: {fileID: 0}
+    - target: {fileID: 5379989353007463670, guid: f70af5680db405a4fbfb4e2ff0af19b8,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5379989353007463670, guid: f70af5680db405a4fbfb4e2ff0af19b8,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5379989353007463670, guid: f70af5680db405a4fbfb4e2ff0af19b8,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5379989353007463670, guid: f70af5680db405a4fbfb4e2ff0af19b8,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5379989353007463670, guid: f70af5680db405a4fbfb4e2ff0af19b8,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5379989353007463670, guid: f70af5680db405a4fbfb4e2ff0af19b8,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5379989353007463670, guid: f70af5680db405a4fbfb4e2ff0af19b8,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f70af5680db405a4fbfb4e2ff0af19b8, type: 3}
 --- !u!1001 &6900992943837083751
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6811,6 +6889,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 938475407}
     m_Modifications:
+    - target: {fileID: 6900992942839773680, guid: f85477429d718ba43bdfe9adb9f77682,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6900992942839773681, guid: f85477429d718ba43bdfe9adb9f77682,
         type: 3}
       propertyPath: tileID
@@ -6959,6 +7042,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: WinningTile
+      objectReference: {fileID: 0}
+    - target: {fileID: 7719866896147967993, guid: 57a64ec4ce2a78c4dbb9ff95145dc3d0,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 57a64ec4ce2a78c4dbb9ff95145dc3d0, type: 3}

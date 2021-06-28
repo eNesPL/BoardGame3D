@@ -17,4 +17,10 @@ public class StartingTile : Tile
     {
         
     }
+    
+
+    private void SpawnPlayer(int id)
+    {
+
+    }
 }
