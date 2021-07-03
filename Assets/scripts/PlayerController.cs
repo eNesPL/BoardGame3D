@@ -71,7 +71,16 @@ public class PlayerController : MonoBehaviour
                     GameObject nextTile;
                     GameObject thisTile;
                     Debug.Log("NEXT TileIDA: " + NextTileID);
-                    if (NextTileID > 40)
+                    TC.Tiles.TryGetValue(TileID, out thisTile);
+                    if (thisTile.GetComponent<Tile>().IsEnding())
+                    {
+                        if (thisTile.GetComponent<EndingTile>().GetPlayerId() == this.playerID)
+                        {
+                            NextTileID = 50 * this.playerID + i;
+                        }
+                    }
+                    thisTile.GetComponent<Tile>().ChangeTileStatus();
+                    if (NextTileID > 40 && NextTileID < 50)
                     {
                         NextTileID = NextTileID - 40;
                     }
@@ -79,8 +88,6 @@ public class PlayerController : MonoBehaviour
                     TC.Tiles.TryGetValue(NextTileID, out nextTile);
                     goal = nextTile.transform.position;
                     isMoving = true;
-                    TC.Tiles.TryGetValue(TileID, out thisTile);
-                    thisTile.GetComponent<Tile>().ChangeTileStatus();
                     nextTile.GetComponent<Tile>().StayOnMe(this);
                     while (isMoving)
                     {

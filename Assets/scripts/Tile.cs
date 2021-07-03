@@ -54,4 +54,8 @@ public class Tile : MonoBehaviour
         }
         
     }
+    public virtual bool IsEnding()
+    {
+        return false;
+    }
 }

@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EndingTile : Tile
+public class WinningTile : Tile
 {
-    [SerializeField]
-    private int PlayerEndID = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -16,13 +14,5 @@ public class EndingTile : Tile
     void Update()
     {
         
-    }
-    public override bool IsEnding()
-    {
-        return true;
-    }
-    public int GetPlayerId()
-    {
-        return PlayerEndID;
     }
 }
