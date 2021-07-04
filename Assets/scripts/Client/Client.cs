@@ -11,6 +11,7 @@ using UnityEngine.SceneManagement;
 
 
 public class Client
+
 {
 
     bool connected = false;
@@ -84,13 +85,26 @@ public class Client
             int bytesRec = 0;
             byte[] msg = Encoding.ASCII.GetBytes("GiveMeDice");
             s.Send(msg);
-            bytesRec = s.Receive(bytes);
-            while (bytesRec == 0) { }
-            int dice = Int32.Parse(Encoding.ASCII.GetString(bytes, 0, bytesRec));
+            string reply = "";
+            if (reply == "")
+            {
+                bytesRec = s.Receive(bytes);
+                while (bytesRec == 0)
+                {
+                }
+
+                reply = Encoding.ASCII.GetString(bytes, 0, bytesRec);
+                reply = reply.Replace("?", "");
+                Debug.LogError(reply);
+            }
+
+            int dice = Int32.Parse(reply.Replace("?",""));
+            Debug.LogError(dice);
             return dice;
         }
-        catch
+        catch(Exception e)
         {
+            Debug.Log(e);
             Debug.Log("Connection lost");
             return 0;
         }

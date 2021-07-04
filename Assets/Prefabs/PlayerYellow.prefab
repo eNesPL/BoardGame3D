@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5379989353007463670}
   - component: {fileID: 5379989353007463626}
   m_Layer: 0
-  m_Name: Player
+  m_Name: PlayerYellow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,9 +45,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerID: 1
+  pawnNumber: 1
   TileID: 1
   DiceRoll: 5
   speed: 5
+  TC: {fileID: 0}
+  StartingTile: 1
 --- !u!1 &5379989353317531363
 GameObject:
   m_ObjectHideFlags: 0

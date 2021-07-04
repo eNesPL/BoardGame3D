@@ -9,27 +9,28 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private int playerID = 0;
     [SerializeField]
+    private int pawnNumber = 0;
+    [SerializeField]
     private int TileID = 1;
     [SerializeField]
     private int DiceRoll = 5;
     [SerializeField]
     private float speed = 5;
     // Start is called before the first frame update
+    [SerializeField]
     TileController TC = null;
-    ThreadController ThC = null;
     private Vector3 goal;
     private bool isMoving = false;
+    [SerializeField]
     private int StartingTile = 1;
     void Start()
     {
         TC = GameObject.FindObjectOfType<TileController>();
-        ThC = GameObject.Find("ThreadController").GetComponent<ThreadController>();
         goal = transform.position;
-        GameObject StarterTile;
-        TC.Tiles.TryGetValue(StartingTile, out StarterTile);
-        StarterTile.GetComponent<Tile>().ChangeTileStatus();
+        //while(TC == null)
+        GameObject StarterTile = TC.GetTile(this.StartingTile);
+        StarterTile.GetComponent<Tile>().StayOnMe(this);
     }
-
     // Update is called once per frame
     void Update()
     {
@@ -43,12 +44,19 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public int GetPlayerID()
+    {
+        return playerID;
+    }
     public void KillMe()
     {
         this.ReturnOnStart();
         
     }
-
+    public void MovePawn(int roll)
+    {
+        StartCoroutine(MoveMe(roll));
+    }
     public void testmove()
     {
         StartCoroutine(MoveMe(DiceRoll));
@@ -56,7 +64,11 @@ public class PlayerController : MonoBehaviour
 
     private void ReturnOnStart()
     {
-        throw new NotImplementedException();
+        Destroy(this.gameObject);
+    }
+    public int GetPawnNumber()
+    {
+        return this.pawnNumber;
     }
     IEnumerator MoveMe(int diceroll)
     {
@@ -67,11 +79,7 @@ public class PlayerController : MonoBehaviour
                 if (isMoving == false)
                 {
                     int NextTileID = TileID + 1;
-                    Debug.Log("TileID: " + TileID);
-                    GameObject nextTile;
-                    GameObject thisTile;
-                    Debug.Log("NEXT TileIDA: " + NextTileID);
-                    TC.Tiles.TryGetValue(TileID, out thisTile);
+                    GameObject thisTile = TC.GetTile(TileID);
                     if (thisTile.GetComponent<Tile>().IsEnding())
                     {
                         if (thisTile.GetComponent<EndingTile>().GetPlayerId() == this.playerID)
@@ -85,15 +93,15 @@ public class PlayerController : MonoBehaviour
                         NextTileID = NextTileID - 40;
                     }
                     Debug.Log("NEXT TileIDB: " + NextTileID);
-                    TC.Tiles.TryGetValue(NextTileID, out nextTile);
-                    goal = nextTile.transform.position;
-                    isMoving = true;
-                    nextTile.GetComponent<Tile>().StayOnMe(this);
-                    while (isMoving)
-                    {
-                        yield return null;
-                    }
-                    this.TileID += 1;
+                    GameObject nextTile = TC.GetTile(NextTileID);
+                        goal = nextTile.transform.position;
+                        isMoving = true;
+                        nextTile.GetComponent<Tile>().StayOnMe(this);
+                        while (isMoving)
+                        {
+                            yield return null;
+                        }
+                        this.TileID = NextTileID;
                 }
 
             }

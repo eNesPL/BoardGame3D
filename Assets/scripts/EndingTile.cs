@@ -21,6 +21,7 @@ public class EndingTile : Tile
     {
         return true;
     }
+
     public int GetPlayerId()
     {
         return PlayerEndID;

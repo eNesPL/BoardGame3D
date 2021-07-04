@@ -25,16 +25,17 @@ public class Tile : MonoBehaviour
 
     public void StayOnMe(PlayerController Player)
     {
-        if (occupied)
+        Debug.Log(Player.GetPlayerID() + " " + this.tileID);
+        if (this.occupied)
         {
-            PlayerOnMe.KillMe();
+            this.PlayerOnMe.KillMe();
             this.PlayerOnMe = Player;
         }
         else
         {
             this.PlayerOnMe = Player;
         }
-        ChangeTileStatus();
+        this.ChangeTileStatus();
     }
     public int GetID()
     {
@@ -47,12 +48,11 @@ public class Tile : MonoBehaviour
 
     public void ChangeTileStatus()
     {
-        occupied = !occupied;
-        if (occupied == false)
+        this.occupied = !this.occupied;
+        if (this.occupied == false)
         {
-            PlayerOnMe = null;
-        }
-        
+            this.PlayerOnMe = null;
+        }        
     }
     public virtual bool IsEnding()
     {

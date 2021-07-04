@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class ClientHandler : MonoBehaviour
@@ -58,12 +59,12 @@ public class ClientHandler : MonoBehaviour
         
     }
 
-    public void getDice()
+    public int getDice()
     {
-        new Thread(() => { 
-            Debug.Log(client.GetDice());
-        }).Start();
-        
+        var dicereader = Task<int>.Run(() => {
+           return client.GetDice();
+        });
+        return dicereader.Result;
     }
 
     public void SendTest()
