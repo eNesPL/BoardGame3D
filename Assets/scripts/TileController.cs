@@ -30,6 +30,16 @@ public class TileController : MonoBehaviour
         return te;
     }
 
+    public int GetEndingTile(int PlayerID)
+    {
+        int TileID = 0;
+        if (PlayerID == 1) TileID = 40;
+        if (PlayerID == 2) TileID = 10;
+        if (PlayerID == 3) TileID = 20;
+        if (PlayerID == 4) TileID = 30;
+        return TileID;
+    }
+
     // Update is called once per frame
     void Update()
     {

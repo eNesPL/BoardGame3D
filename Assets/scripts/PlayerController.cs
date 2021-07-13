@@ -70,30 +70,54 @@ public class PlayerController : MonoBehaviour
     {
         return this.pawnNumber;
     }
+
+    bool CanIMove(int diceroll)
+    {
+        if (TC.GetTile(TileID + diceroll) != null)
+        {
+            if (this.TileID + diceroll > TC.GetEndingTile(this.playerID))
+            {
+
+            }
+        }
+        else
+        {
+            if (this.TileID + diceroll > TC.GetEndingTile(this.playerID))
+            {
+
+            }
+            Debug.Log("Za Daleko frajerze");
+            return false;
+        }
+        
+    }
+
     IEnumerator MoveMe(int diceroll)
     {
         if (isMoving == false)
         {
             for (int i = 1; i <= diceroll; i++)
-            {
-                if (isMoving == false)
                 {
-                    int NextTileID = TileID + 1;
-                    GameObject thisTile = TC.GetTile(TileID);
-                    if (thisTile.GetComponent<Tile>().IsEnding())
+                    if (isMoving == false)
                     {
-                        if (thisTile.GetComponent<EndingTile>().GetPlayerId() == this.playerID)
+                        int NextTileID = TileID + 1;
+                        GameObject thisTile = TC.GetTile(TileID);
+                        if (thisTile.GetComponent<Tile>().IsEnding())
                         {
-                            NextTileID = 50 * this.playerID + i;
+                            if (thisTile.GetComponent<EndingTile>().GetPlayerId() == this.playerID)
+                            {
+                                NextTileID = 50 * this.playerID + i;
+                            }
                         }
-                    }
-                    thisTile.GetComponent<Tile>().ChangeTileStatus();
-                    if (NextTileID > 40 && NextTileID < 50)
-                    {
-                        NextTileID = NextTileID - 40;
-                    }
-                    Debug.Log("NEXT TileIDB: " + NextTileID);
-                    GameObject nextTile = TC.GetTile(NextTileID);
+
+                        thisTile.GetComponent<Tile>().ChangeTileStatus();
+                        if (NextTileID > 40 && NextTileID < 50)
+                        {
+                            NextTileID = NextTileID - 40;
+                        }
+
+                        Debug.Log("NEXT TileIDB: " + NextTileID);
+                        GameObject nextTile = TC.GetTile(NextTileID);
                         goal = nextTile.transform.position;
                         isMoving = true;
                         nextTile.GetComponent<Tile>().StayOnMe(this);
@@ -101,11 +125,14 @@ public class PlayerController : MonoBehaviour
                         {
                             yield return null;
                         }
-                        this.TileID = NextTileID;
-                }
 
+                        this.TileID = NextTileID;
+                    }
+
+                }
             }
-            
+
+
         }
     }
 }
