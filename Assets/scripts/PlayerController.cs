@@ -28,8 +28,8 @@ public class PlayerController : MonoBehaviour
         TC = GameObject.FindObjectOfType<TileController>();
         goal = transform.position;
         //while(TC == null)
-        GameObject StarterTile = TC.GetTile(this.StartingTile);
-        StarterTile.GetComponent<Tile>().StayOnMe(this);
+        //GameObject StarterTile = TC.GetTile(this.StartingTile);
+        //StarterTile.GetComponent<Tile>().StayOnMe(this);
     }
     // Update is called once per frame
     void Update()
@@ -77,62 +77,79 @@ public class PlayerController : MonoBehaviour
         {
             if (this.TileID + diceroll > TC.GetEndingTile(this.playerID))
             {
-
+                int left = TC.GetEndingTile(this.playerID) - this.TileID;
+                diceroll = left-diceroll;
+                int lasttileid = 50 * this.playerID + diceroll;
+                if(lasttileid>50*this.playerID+4){
+                    return false;
+                }
+                return true;
             }
         }
         else
         {
             if (this.TileID + diceroll > TC.GetEndingTile(this.playerID))
             {
-
+                int left = TC.GetEndingTile(this.playerID) - this.TileID;
+                diceroll = diceroll-left;
+                int lasttileid = 50 * this.playerID + diceroll;
+                if(lasttileid>50*this.playerID+4){
+                    return false;
+                }
+                return true;
             }
-            Debug.Log("Za Daleko frajerze");
-            return false;
         }
+        return true;
         
+    }
+
+    int GetNextTile()
+    {
+        GameObject thisTile = TC.GetTile(TileID);
+        int NextTile = 0;
+        if (thisTile.GetComponent<Tile>().IsEnding())
+        {
+            if (thisTile.GetComponent<EndingTile>().GetPlayerId() == this.playerID)
+            {
+                NextTile = 50 * this.playerID+1;
+            }
+            else
+            {
+                NextTile = thisTile.GetComponent<Tile>().GetID() + 1;
+            }
+            
+        }
+        else
+        {
+            NextTile = thisTile.GetComponent<Tile>().GetID() + 1;
+        }
+        Debug.Log("NEXT TILE: " + NextTile);
+        return NextTile;
     }
 
     IEnumerator MoveMe(int diceroll)
     {
-        if (isMoving == false)
+        if (isMoving == false && CanIMove(diceroll))
         {
-            for (int i = 1; i <= diceroll; i++)
+            Debug.Log("THIS TILE: "+ this.TileID);
+            for (int i = diceroll; i != 0; i--)
+            {
+                GameObject thisTile = TC.GetTile(TileID);
+                GameObject nextTile = TC.GetTile(GetNextTile());
+                thisTile.GetComponent<Tile>().ChangeTileStatus();
+                goal = nextTile.transform.position;
+                isMoving = true;
+                nextTile.GetComponent<Tile>().StayOnMe(this);
+
+                while (isMoving)
                 {
-                    if (isMoving == false)
-                    {
-                        int NextTileID = TileID + 1;
-                        GameObject thisTile = TC.GetTile(TileID);
-                        if (thisTile.GetComponent<Tile>().IsEnding())
-                        {
-                            if (thisTile.GetComponent<EndingTile>().GetPlayerId() == this.playerID)
-                            {
-                                NextTileID = 50 * this.playerID + i;
-                            }
-                        }
-
-                        thisTile.GetComponent<Tile>().ChangeTileStatus();
-                        if (NextTileID > 40 && NextTileID < 50)
-                        {
-                            NextTileID = NextTileID - 40;
-                        }
-
-                        Debug.Log("NEXT TileIDB: " + NextTileID);
-                        GameObject nextTile = TC.GetTile(NextTileID);
-                        goal = nextTile.transform.position;
-                        isMoving = true;
-                        nextTile.GetComponent<Tile>().StayOnMe(this);
-                        while (isMoving)
-                        {
-                            yield return null;
-                        }
-
-                        this.TileID = NextTileID;
-                    }
-
+                    yield return null;
                 }
+                this.TileID = nextTile.GetComponent<Tile>().GetID();
+                Debug.Log("NEXT TILE: "+this.TileID);
             }
-
-
         }
     }
+
 }
+

@@ -16,7 +16,6 @@ public class TileController : MonoBehaviour
         ListOfTiles = GameObject.FindGameObjectsWithTag("Tile").ToList();
         foreach (GameObject g in ListOfTiles)
         {
-            Debug.LogWarning("TTT");
             Tiles.Add(g.GetComponent<Tile>().GetID(), g);
         }
         this.loading = false;
@@ -37,6 +36,7 @@ public class TileController : MonoBehaviour
         if (PlayerID == 2) TileID = 10;
         if (PlayerID == 3) TileID = 20;
         if (PlayerID == 4) TileID = 30;
+        Debug.Log(TileID);
         return TileID;
     }
 
