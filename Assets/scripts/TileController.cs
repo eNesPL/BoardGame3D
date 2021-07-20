@@ -39,6 +39,16 @@ public class TileController : MonoBehaviour
         Debug.Log(TileID);
         return TileID;
     }
+    public int GetStartingTile(int PlayerID)
+    {
+        int TileID = 0;
+        if (PlayerID == 1) TileID = 1;
+        if (PlayerID == 2) TileID = 11;
+        if (PlayerID == 3) TileID = 21;
+        if (PlayerID == 4) TileID = 31;
+        Debug.Log(TileID);
+        return TileID;
+    }
 
     // Update is called once per frame
     void Update()

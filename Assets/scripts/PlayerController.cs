@@ -23,6 +23,8 @@ public class PlayerController : MonoBehaviour
     private bool isMoving = false;
     [SerializeField]
     private int StartingTile = 1;
+    [SerializeField]
+    private bool spawned = false;
     void Start()
     {
         TC = GameObject.FindObjectOfType<TileController>();
@@ -64,8 +66,32 @@ public class PlayerController : MonoBehaviour
 
     private void ReturnOnStart()
     {
-        Destroy(this.gameObject);
+        Vector3 Spos = findPawnStartingPoint(playerID, pawnNumber);
+        this.transform.position = Spos;
     }
+
+    private Vector3 findPawnStartingPoint(int playerID, int pawnNumber)
+    {
+        string start = "";
+        switch (playerID)
+        {
+            case 1:
+                start = "YellowSpawn"+pawnNumber;
+                break;
+            case 2:
+                start = "RedSpawn" + pawnNumber;
+                break;
+            case 3:
+                start = "BlueSpawn" + pawnNumber;
+                break;
+            case 4:
+                start = "GreenSpawn" + pawnNumber;
+                break;
+        }
+        GameObject SpawnPoint = GameObject.Find(start);
+        return SpawnPoint.transform.position;
+    }
+
     public int GetPawnNumber()
     {
         return this.pawnNumber;
@@ -151,5 +177,16 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    bool isOnSpawn()
+    {
+        return spawned;
+    }
+
+    void Spawn()
+    {
+        GameObject start = TC.GetTile(TC.GetStartingTile(this.playerID));
+        this.transform.position = start.transform.position;
+        start.GetComponent<Tile>().StayOnMe(this);
+    }
 }
 
