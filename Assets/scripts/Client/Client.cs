@@ -111,7 +111,7 @@ public class Client
     }
 
 
-    public void FindServer(Client client)
+    public bool FindServer(Client client)
     {
         while (true)
         {
@@ -131,11 +131,13 @@ public class Client
                         {
                             client.Connect(groupEP.Address.ToString(), 111);
                             listener.Close();
+                            return true;
                         }
                         catch
                         {
                             Debug.Log("No Server");
                             listener.Close();
+                            return false;
                         }
 
 
@@ -144,11 +146,14 @@ public class Client
                     {
                         Console.WriteLine(e);
                         listener.Close();
+                        return false;
                     }
                     finally
                     {
                         listener.Close();
+
                     }
+                    return false;
                 }
             }
         }

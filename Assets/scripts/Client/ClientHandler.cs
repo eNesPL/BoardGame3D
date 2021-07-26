@@ -10,40 +10,27 @@ public class ClientHandler : MonoBehaviour
 {
     // Start is called before the first frame update
     Client client = new Client();
-    void Start()
+    private void Awake()
     {
-        ThreadController TC = GameObject.Find("ThreadController").GetComponent<ThreadController>();
-
-        Thread t = new Thread(() => {
-            try
-            {
-                client.FindServer(client);
-            }
-            catch (Exception e)
-            {
-                Debug.Log(e);
-            }
-        });
-        t.IsBackground=true;
-        TC.Threads.Add(t);
-        t.Start();
-
-        Thread c = new Thread(() => {
-            try
-            {
-                client.ConnectionTester(client);
-            }
-            catch (Exception e)
-            {
-                Debug.Log(e);
-            }
-        });
-        c.IsBackground = true;
-        TC.Threads.Add(c);
-        c.Start();
-        
+        DontDestroyOnLoad(this.gameObject);
     }
+    async Task StartAsync()
+    {
+        // ThreadController TC = GameObject.Find("ThreadController").GetComponent<ThreadController>();
 
+        bool status = await Task.Run(() => {
+            return client.FindServer(client);
+        });
+        Task.WaitAll();
+        if (status == true)
+        {
+            Debug.Log("connected");
+        }
+    }
+    private void Start()
+    {
+        StartAsync();
+    }
     void OnApplicationQuit()
     {
 #if UNITY_EDITOR

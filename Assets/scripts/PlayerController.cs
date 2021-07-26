@@ -188,5 +188,14 @@ public class PlayerController : MonoBehaviour
         this.transform.position = start.transform.position;
         start.GetComponent<Tile>().StayOnMe(this);
     }
+
+    public void SetPosition(int TileID)
+    {
+        this.TileID = TileID;
+        GameObject Tile = TC.GetTile(TileID);
+        this.transform.position=Tile.transform.position;
+        Tile.GetComponent<Tile>().StayOnMe(this);
+
+    }
 }
 

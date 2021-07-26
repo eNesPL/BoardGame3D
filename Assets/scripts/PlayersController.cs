@@ -23,7 +23,6 @@ public class PlayersController : MonoBehaviour
     void Start()
     {
         CH = GameObject.FindWithTag("Client").GetComponent<ClientHandler>();
-               
     }
 
     // Update is called once per frame
@@ -127,4 +126,6 @@ public class PlayersController : MonoBehaviour
         MovePawn(1, playerTurn, dice);
         ChangeTurn();
     }
+
+
 }
