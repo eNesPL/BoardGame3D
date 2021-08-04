@@ -123,9 +123,132 @@ public class PlayersController : MonoBehaviour
     {
         int dice = 0;
         dice = CH.getDice();
+        if(dice == 6)
+        {
+            if (HaveUnSpawnedPawns(playerTurn)){
+                int option = CH.SpawnOrMoveQuestion();
+                if(option == 1)
+                {
+                    SpawnPawn();
+                }
+                else
+                {
+                    var spawnedpawns = GetSpawnedPawns();
+                    var movablepawns = GetMovablePawns(spawnedpawns, dice);
+                    CH.SendQuestionMovablePawns(movablepawns);
+                }
+            }
+        }
         MovePawn(1, playerTurn, dice);
         ChangeTurn();
     }
 
+    private object GetMovablePawns(List<GameObject> spawnedpawns, int dice)
+    {
+        var MovablePawns = new List<GameObject>();
+        for (int i = 0; i < spawnedpawns.Count; i++)
+        {
+            GameObject pawn = spawnedpawns[i];
+            if (pawn.GetComponent<PlayerController>().CanIMove(dice))
+            {
+                MovablePawns.Add(pawn);
+            }
 
+        }
+        return MovablePawns;
+    }
+
+    private List<GameObject> GetSpawnedPawns()
+    {
+        var listofpawns = new List<GameObject>();
+        GameObject pawn;
+        Dictionary<int, GameObject> Pawns = new Dictionary<int, GameObject>();
+        switch (playerTurn)
+        {
+            case 1:
+                Pawns = yellowPawns;
+                break;
+            case 2:
+                Pawns = redPawns;
+                break;
+            case 3:
+                Pawns = bluePawns;
+                break;
+            case 4:
+                Pawns = greenPawns;
+                break;
+        }
+        for (int i = 1; i < 5; i++)
+        {
+            Pawns.TryGetValue(i, out pawn);
+            if (!pawn.GetComponent<PlayerController>().isOnSpawn())
+            {
+                listofpawns.Add(pawn);
+            }
+            
+        }
+        return pawn;
+    }
+
+    private void SpawnPawn()
+    {
+        Dictionary<int, GameObject> Pawns = new Dictionary<int, GameObject>();
+        switch (playerTurn)
+        {
+            case 1:
+                Pawns = yellowPawns;
+                break;
+            case 2:
+                Pawns = redPawns;
+                break;
+            case 3:
+                Pawns = bluePawns;
+                break;
+            case 4:
+                Pawns = greenPawns;
+                break;
+        }
+        for (int i = 1; i < 5; i++)
+        {
+            GameObject pawn;
+            Pawns.TryGetValue(1, out pawn);
+            var pwn = pawn.GetComponent<PlayerController>();
+            if (pwn.isOnSpawn())
+            {
+                pwn.Spawn();
+                break;
+            }
+        }
+    }
+
+    private bool HaveUnSpawnedPawns(int playerTurn)
+    {
+
+        Dictionary<int, GameObject> Pawns = new Dictionary<int, GameObject>();
+        switch (playerTurn)
+        {
+            case 1:
+                Pawns = yellowPawns;
+                break;
+            case 2:
+                Pawns = redPawns;
+                break;
+            case 3:
+                Pawns = bluePawns;
+                break;
+            case 4:
+                Pawns = greenPawns;
+                break;
+        }
+        for(int i = 1; i < 5; i++)
+        {
+            GameObject pawn;
+            Pawns.TryGetValue(1, out pawn);
+            if (pawn.GetComponent<PlayerController>().isOnSpawn())
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }

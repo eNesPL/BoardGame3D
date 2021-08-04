@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
@@ -76,6 +77,36 @@ public class Client
             {
                 Debug.Log("Connection lost");
             }
+    }
+
+    public void ReplyHandler()
+    {
+        try
+        {
+            int bytesRec = 0;
+            string reply = "";
+            if (reply == "")
+            {
+                bytesRec = s.Receive(bytes);
+                while (bytesRec == 0)
+                {
+                }
+
+                reply = Encoding.ASCII.GetString(bytes, 0, bytesRec);
+                reply = reply.Replace("?", "");
+                Debug.LogError(reply);
+                var JsonReply = JObject.Parse(reply);
+                if(JsonReply["Type"].ToString()=="New")
+                {
+                    Debug.Log("New");
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e);
+            Debug.Log("Connection lost");
+        }
     }
 
     public int GetDice()

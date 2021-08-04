@@ -16,7 +16,7 @@ public class ClientHandler : MonoBehaviour
     }
     async Task StartAsync()
     {
-        // ThreadController TC = GameObject.Find("ThreadController").GetComponent<ThreadController>();
+        ThreadController TC = GameObject.Find("ThreadController").GetComponent<ThreadController>();
 
         bool status = await Task.Run(() => {
             return client.FindServer(client);
@@ -25,6 +25,12 @@ public class ClientHandler : MonoBehaviour
         if (status == true)
         {
             Debug.Log("connected");
+            Thread T = new Thread(() =>
+            {
+                client.ReplyHandler();
+            });
+            TC.Threads.Add(T);
+            T.Start();
         }
     }
     private void Start()
@@ -59,5 +65,17 @@ public class ClientHandler : MonoBehaviour
         new Thread(() => {
             client.Test();
         }).Start();
+    }
+
+   public int SpawnOrMoveQuestion()
+    {
+        // TODO:Spawn Or move Send Question to pi
+        throw new NotImplementedException();
+    }
+
+    internal void SendQuestionMovablePawns(object movablepawns)
+    {
+        // TODO: SendQuestion Movalbe pawns to pi
+        throw new NotImplementedException();
     }
 }

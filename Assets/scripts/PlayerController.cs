@@ -97,7 +97,7 @@ public class PlayerController : MonoBehaviour
         return this.pawnNumber;
     }
 
-    bool CanIMove(int diceroll)
+    public bool CanIMove(int diceroll)
     {
         if (TC.GetTile(TileID + diceroll) != null)
         {
@@ -177,12 +177,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    bool isOnSpawn()
+    public bool isOnSpawn()
     {
         return spawned;
     }
 
-    void Spawn()
+    public void Spawn()
     {
         GameObject start = TC.GetTile(TC.GetStartingTile(this.playerID));
         this.transform.position = start.transform.position;
@@ -197,5 +197,6 @@ public class PlayerController : MonoBehaviour
         Tile.GetComponent<Tile>().StayOnMe(this);
 
     }
+
 }
 
