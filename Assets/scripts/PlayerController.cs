@@ -45,7 +45,10 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-
+    public int GetActualTile()
+    {
+        return this.TileID;
+    }
     public int GetPlayerID()
     {
         return playerID;
@@ -187,12 +190,15 @@ public class PlayerController : MonoBehaviour
         GameObject start = TC.GetTile(TC.GetStartingTile(this.playerID));
         this.transform.position = start.transform.position;
         start.GetComponent<Tile>().StayOnMe(this);
+        this.spawned = true;
     }
 
     public void SetPosition(int TileID)
     {
+        this.spawned = true;
         this.TileID = TileID;
-        GameObject Tile = TC.GetTile(TileID);
+        GameObject Tile = TC.GetTile(this.TileID);
+        Debug.Log(Tile);
         this.transform.position=Tile.transform.position;
         Tile.GetComponent<Tile>().StayOnMe(this);
 

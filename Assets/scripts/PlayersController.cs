@@ -1,9 +1,12 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
-
+using Newtonsoft.Json;
 public class PlayersController : MonoBehaviour
 {
 
@@ -20,15 +23,85 @@ public class PlayersController : MonoBehaviour
     int[] playerScore = new int[4] { 0, 0, 0, 0 };
     [SerializeField]
     ClientHandler CH;
+    SceneChanger SC;
     void Start()
     {
         CH = GameObject.FindWithTag("Client").GetComponent<ClientHandler>();
+        SC = GameObject.Find("SceneChanger").GetComponent<SceneChanger>();
+        StartGame(SC.GetData());
+    }
+
+    private void StartGame(JObject jObject)
+    {
+        if (jObject["Type"].ToString() == "New")
+        {
+            NewGame(int.Parse(jObject["Players"].ToString()));
+        }
+        if (jObject["Type"].ToString() == "Continue")
+        {
+            ContinueGame();
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
+    }
+
+    public void NewGame(int Players)
+    {
+        this.players = Players;
+    }
+    public void ContinueGame()
+    {
+        var JsonReply = LoadFile();
+        this.players = int.Parse(JsonReply["Players"].ToString());
+        GetPawns();
+        GameObject pawn;
+        int tile;
+        for (int i = 1; i < 5; i++)
+        {
+            for (int j = 1; j < 5; j++)
+            {
+                switch (i)
+                {
+                    case 1:
+                        yellowPawns.TryGetValue(j, out pawn);
+                        tile = int.Parse(JsonReply[i.ToString()][j.ToString()].ToString());
+                        if (tile != 0)
+                        {
+                            pawn.GetComponent<PlayerController>().SetPosition(tile);
+                        }
+                        break;
+                    case 2:
+                        redPawns.TryGetValue(j, out pawn);
+                        tile = int.Parse(JsonReply[i.ToString()][j.ToString()].ToString());
+                        if (tile != 0)
+                        {
+                            pawn.GetComponent<PlayerController>().SetPosition(tile);
+                        }
+                        break;
+                    case 3:
+                        bluePawns.TryGetValue(j, out pawn);
+                        tile = int.Parse(JsonReply[i.ToString()][j.ToString()].ToString());
+                        if (tile != 0)
+                        {
+                            pawn.GetComponent<PlayerController>().SetPosition(tile);
+                        }
+                        break;
+                    case 4:
+                        greenPawns.TryGetValue(j, out pawn);
+                        tile = int.Parse(JsonReply[i.ToString()][j.ToString()].ToString());
+                        if (tile != 0)
+                        {
+                            pawn.GetComponent<PlayerController>().SetPosition(tile);
+                        }
+                        break;
+                }
+            }
+        }
+
     }
     private void ChangeTurn()
     {
@@ -40,8 +113,8 @@ public class PlayersController : MonoBehaviour
     }
     public void GetPawns()
     {
-        
-        List<GameObject>ListOfPawns = GameObject.FindGameObjectsWithTag("RedPawn").ToList();
+
+        List<GameObject> ListOfPawns = GameObject.FindGameObjectsWithTag("RedPawn").ToList();
         try
         {
             foreach (GameObject g in ListOfPawns)
@@ -49,7 +122,7 @@ public class PlayersController : MonoBehaviour
                 redPawns.Add(g.GetComponent<PlayerController>().GetPawnNumber(), g);
             }
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             Debug.Log(e);
         }
@@ -94,7 +167,7 @@ public class PlayersController : MonoBehaviour
         }
     }
 
-    private Dictionary<int,GameObject> GetDict(int playerID)
+    private Dictionary<int, GameObject> GetDict(int playerID)
     {
         switch (playerID)
         {
@@ -123,11 +196,12 @@ public class PlayersController : MonoBehaviour
     {
         int dice = 0;
         dice = CH.getDice();
-        if(dice == 6)
+        if (dice == 6)
         {
-            if (HaveUnSpawnedPawns(playerTurn)){
+            if (HaveUnSpawnedPawns(playerTurn))
+            {
                 int option = CH.SpawnOrMoveQuestion();
-                if(option == 1)
+                if (option == 1)
                 {
                     SpawnPawn();
                 }
@@ -135,11 +209,11 @@ public class PlayersController : MonoBehaviour
                 {
                     var spawnedpawns = GetSpawnedPawns();
                     var movablepawns = GetMovablePawns(spawnedpawns, dice);
-                    CH.SendQuestionMovablePawns(movablepawns);
+                    int selected = CH.SendQuestionMovablePawns(movablepawns);
+                    MovePawn(selected, playerTurn, dice);
                 }
             }
         }
-        MovePawn(1, playerTurn, dice);
         ChangeTurn();
     }
 
@@ -185,9 +259,9 @@ public class PlayersController : MonoBehaviour
             {
                 listofpawns.Add(pawn);
             }
-            
+
         }
-        return pawn;
+        return listofpawns;
     }
 
     private void SpawnPawn()
@@ -240,7 +314,7 @@ public class PlayersController : MonoBehaviour
                 Pawns = greenPawns;
                 break;
         }
-        for(int i = 1; i < 5; i++)
+        for (int i = 1; i < 5; i++)
         {
             GameObject pawn;
             Pawns.TryGetValue(1, out pawn);
@@ -250,5 +324,84 @@ public class PlayersController : MonoBehaviour
             }
         }
         return false;
+    }
+    public void SaveFile()
+    {
+        string destination = Application.persistentDataPath + "/save.dat";
+        FileStream file;
+        if (File.Exists(destination)) file = File.OpenWrite(destination);
+        else file = File.Create(destination);
+        file.Close();
+        string data = "{ \"Players\": " + players + ",";
+        int tile;
+        GameObject pawn;
+        GetPawns();
+        for (int i = 1; i < 5; i++)
+        {
+            data = data + "\"" + i + "\":{";
+            for (int j = 1; j < 5; j++)
+            {
+
+                switch (i)
+                {
+                    case 1:
+                        yellowPawns.TryGetValue(j, out pawn);
+                        tile = pawn.GetComponent<PlayerController>().GetActualTile();
+                        data = data + "\"" + j + "\":" + tile;
+                        break;
+                    case 2:
+                        redPawns.TryGetValue(j, out pawn);
+                        tile = pawn.GetComponent<PlayerController>().GetActualTile();
+                        data = data + "\"" + j + "\":" + tile;
+                        break;
+                    case 3:
+                        bluePawns.TryGetValue(j, out pawn);
+                        tile = pawn.GetComponent<PlayerController>().GetActualTile();
+                        data = data + "\"" + j + "\":" + tile;
+                        break;
+                    case 4:
+                        greenPawns.TryGetValue(j, out pawn);
+                        tile = pawn.GetComponent<PlayerController>().GetActualTile();
+                        data = data + "\"" + j + "\":" + tile;
+                        break;
+                }
+                if (j != 4)
+                {
+                    data = data + ",";
+                }
+            }
+            if (i != 4)
+            {
+                data = data + "},";
+            }
+            else
+            {
+                data = data + "}";
+            }
+        }
+        data = data + "}";
+        StreamWriter writer = new StreamWriter(destination, true);
+        writer.WriteLine(data);
+        writer.Close();
+        Debug.Log(data);
+    }
+
+    public JObject LoadFile()
+    {
+        string destination = Application.persistentDataPath + "/save.dat";
+        FileStream file;
+
+        if (File.Exists(destination)) file = File.OpenRead(destination);
+        else
+        {
+            Debug.LogError("File not found");
+            return null;
+        }
+        BinaryFormatter bf = new BinaryFormatter();
+        StreamReader reader = new StreamReader(destination);
+        string data = reader.ReadLine();
+        var JsonData = JObject.Parse(data);
+        file.Close();
+        return JsonData;
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -10,28 +11,35 @@ public class ClientHandler : MonoBehaviour
 {
     // Start is called before the first frame update
     Client client = new Client();
+    PlayersController PC;
+    ThreadController TC;
     private void Awake()
     {
         DontDestroyOnLoad(this.gameObject);
     }
     async Task StartAsync()
     {
-        ThreadController TC = GameObject.Find("ThreadController").GetComponent<ThreadController>();
 
-        bool status = await Task.Run(() => {
-            return client.FindServer(client);
-        });
-        Task.WaitAll();
-        if (status == true)
-        {
-            Debug.Log("connected");
-            Thread T = new Thread(() =>
+            TC = GameObject.Find("ThreadController").GetComponent<ThreadController>();
+            SceneChanger SC = GameObject.Find("SceneChanger").GetComponent<SceneChanger>();
+
+            bool status = await Task.Run(() =>
             {
-                client.ReplyHandler();
+                return client.FindServer(client);
             });
-            TC.Threads.Add(T);
-            T.Start();
-        }
+            Task.WaitAll();
+            if (status == true)
+            {
+                Debug.Log("connected");
+
+                var reply = Task.Run(() =>
+                {
+                    return client.ReplyHandler();
+                });
+                var JsonReply = reply.Result;
+                SC.SetJson(JsonReply);
+            }
+        
     }
     private void Start()
     {
@@ -73,7 +81,7 @@ public class ClientHandler : MonoBehaviour
         throw new NotImplementedException();
     }
 
-    internal void SendQuestionMovablePawns(object movablepawns)
+    internal int SendQuestionMovablePawns(object movablepawns)
     {
         // TODO: SendQuestion Movalbe pawns to pi
         throw new NotImplementedException();

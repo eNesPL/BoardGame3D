@@ -79,7 +79,7 @@ public class Client
             }
     }
 
-    public void ReplyHandler()
+    public JObject ReplyHandler()
     {
         try
         {
@@ -94,19 +94,17 @@ public class Client
 
                 reply = Encoding.ASCII.GetString(bytes, 0, bytesRec);
                 reply = reply.Replace("?", "");
-                Debug.LogError(reply);
                 var JsonReply = JObject.Parse(reply);
-                if(JsonReply["Type"].ToString()=="New")
-                {
-                    Debug.Log("New");
-                }
+                return JsonReply;
             }
         }
         catch (Exception e)
         {
             Debug.Log(e);
             Debug.Log("Connection lost");
+            return null;
         }
+        return null;
     }
 
     public int GetDice()
@@ -184,7 +182,6 @@ public class Client
                         listener.Close();
 
                     }
-                    return false;
                 }
             }
         }
