@@ -107,6 +107,37 @@ public class Client
         return null;
     }
 
+    public string SendCommand(string command)
+    {
+        try
+        {
+            int bytesRec = 0;
+            byte[] msg = Encoding.ASCII.GetBytes(command);
+            s.Send(msg);
+            string reply = "";
+            if (reply == "")
+            {
+                bytesRec = s.Receive(bytes);
+                while (bytesRec == 0)
+                {
+                }
+
+                reply = Encoding.ASCII.GetString(bytes, 0, bytesRec);
+                reply = reply.Replace("?", "");
+                Debug.LogError(reply);
+            }
+
+            Debug.LogError(reply);
+            return reply;
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e);
+            Debug.Log("Connection lost");
+            return "";
+        }
+    }
+
     public int GetDice()
     {
         try

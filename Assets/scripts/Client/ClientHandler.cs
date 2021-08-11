@@ -77,13 +77,21 @@ public class ClientHandler : MonoBehaviour
 
    public int SpawnOrMoveQuestion()
     {
-        // TODO:Spawn Or move Send Question to pi
-        throw new NotImplementedException();
+            string option = client.SendCommand("SpawnOrMove");
+            if (option == "spawn") { return 1; }
+            if (option == "move") { return 2; }
+            return 2;
     }
 
-    internal int SendQuestionMovablePawns(object movablepawns)
+    internal int SendQuestionMovablePawns(List<GameObject> movablepawns)
     {
-        // TODO: SendQuestion Movalbe pawns to pi
-        throw new NotImplementedException();
+        string command = "";
+        foreach(var pawn in movablepawns)
+        {
+            var r = pawn.GetComponent<PlayerController>().GetPawnNumber();
+            command = command + r + ";";
+        }
+        string reply = client.SendCommand(command);
+        return int.Parse(reply);
     }
 }

@@ -217,7 +217,7 @@ public class PlayersController : MonoBehaviour
         ChangeTurn();
     }
 
-    private object GetMovablePawns(List<GameObject> spawnedpawns, int dice)
+    private List<GameObject> GetMovablePawns(List<GameObject> spawnedpawns, int dice)
     {
         var MovablePawns = new List<GameObject>();
         for (int i = 0; i < spawnedpawns.Count; i++)
@@ -325,6 +325,7 @@ public class PlayersController : MonoBehaviour
         }
         return false;
     }
+
     public void SaveFile()
     {
         string destination = Application.persistentDataPath + "/save.dat";
