@@ -7,12 +7,12 @@ using UnityEngine.SceneManagement;
 
 public class SceneChanger : MonoBehaviour
 {
-    PlayersController PC;
+    ClientHandler CH;
     JObject JsonConfig;
     // Start is called before the first frame update
     void Start()
     {
-        
+        CH = GameObject.Find("ClientHandler").GetComponent<ClientHandler>();
     }
     private void Awake()
     {
@@ -33,7 +33,7 @@ public class SceneChanger : MonoBehaviour
     
     public void SetJson(JObject Json)
     {
-        JsonConfig = Json;
+        this.JsonConfig = Json;
         SceneManager.LoadScene(1);
     }
 }

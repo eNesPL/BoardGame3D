@@ -9,10 +9,9 @@ using System.Text;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
+using UnityToolbag;
 
 public class Client
-
 {
 
     bool connected = false;
@@ -20,16 +19,15 @@ public class Client
     Socket s = new Socket(AddressFamily.InterNetwork,
     SocketType.Stream,
     ProtocolType.Tcp);
-  
+    public event Action<DiceData> OnGetDiceValue = delegate { };
+
     public bool Connect(string host, int port)
     {
         try {
-            s = new Socket(AddressFamily.InterNetwork,
-    SocketType.Stream,
-    ProtocolType.Tcp);
             Debug.Log("Connecting");
             Debug.Log(host +":"+ port);
-            s.Connect(host, port);
+            this.s.Connect(host, port);
+            Debug.LogError(this.s.Connected);
             connected = true;
             return true;
         }
@@ -37,46 +35,6 @@ public class Client
         {
             return false;
         }
-    }
-
-    public void ConnectionTester(Client client)
-    {
-        while (true)
-        {
-            if (connected)
-            {     
-                Debug.Log("Testing");
-                try
-                {
-
-                    s.Send(Encoding.ASCII.GetBytes("?"));
-                }
-                catch
-                {
-                    connected = false;
-                }
-                Thread.Sleep(2000);
-            }
-        }
-
-    }
-
-    public void Test()
-    {
-            try
-            {
-                int bytesRec = 0;
-                byte[] msg = Encoding.ASCII.GetBytes("JustTestMe");
-                s.Send(msg);
-                bytesRec = s.Receive(bytes);
-                while (bytesRec == 0) { }
-                string cmd = Encoding.ASCII.GetString(bytes, 0, bytesRec).Replace("?","");
-                Debug.Log(cmd);
-            }
-            catch
-            {
-                Debug.Log("Connection lost");
-            }
     }
 
     public JObject ReplyHandler()
@@ -87,13 +45,14 @@ public class Client
             string reply = "";
             if (reply == "")
             {
-                bytesRec = s.Receive(bytes);
+                bytesRec = this.s.Receive(bytes);
                 while (bytesRec == 0)
                 {
                 }
 
                 reply = Encoding.ASCII.GetString(bytes, 0, bytesRec);
                 reply = reply.Replace("?", "");
+                Debug.Log(reply);
                 var JsonReply = JObject.Parse(reply);
                 return JsonReply;
             }
@@ -113,11 +72,11 @@ public class Client
         {
             int bytesRec = 0;
             byte[] msg = Encoding.ASCII.GetBytes(command);
-            s.Send(msg);
+            this.s.Send(msg);
             string reply = "";
             if (reply == "")
             {
-                bytesRec = s.Receive(bytes);
+                bytesRec = this.s.Receive(bytes);
                 while (bytesRec == 0)
                 {
                 }
@@ -138,17 +97,19 @@ public class Client
         }
     }
 
-    public int GetDice()
+    public void GetDice()
     {
+        Debug.LogError(this.s.Connected);
         try
         {
             int bytesRec = 0;
             byte[] msg = Encoding.ASCII.GetBytes("GiveMeDice");
-            s.Send(msg);
+            this.s.Send(msg);
+            
             string reply = "";
             if (reply == "")
             {
-                bytesRec = s.Receive(bytes);
+                bytesRec = this.s.Receive(bytes);
                 while (bytesRec == 0)
                 {
                 }
@@ -160,23 +121,24 @@ public class Client
 
             int dice = Int32.Parse(reply.Replace("?",""));
             Debug.LogError(dice);
-            return dice;
+            DiceData data = new DiceData(dice);
+            Dispatcher.Invoke(() => OnGetDiceValue?.Invoke(data));
         }
         catch(Exception e)
         {
             Debug.Log(e);
             Debug.Log("Connection lost");
-            return 0;
+            DiceData data = new DiceData(0);
+            Dispatcher.Invoke(() => OnGetDiceValue?.Invoke(data));
         }
+        
     }
 
 
     public bool FindServer(Client client)
     {
-        while (true)
+        while (!connected)
         {
-            if (!connected)
-            {
                 using (UdpClient listener = new UdpClient(112))
                 {
                     IPEndPoint groupEP = new IPEndPoint(IPAddress.Any, 112);
@@ -190,7 +152,6 @@ public class Client
                         try
                         {
                             client.Connect(groupEP.Address.ToString(), 111);
-                            listener.Close();
                             return true;
                         }
                         catch
@@ -213,8 +174,10 @@ public class Client
                         listener.Close();
 
                     }
+
                 }
-            }
         }
+        return false;
     }
+
 }

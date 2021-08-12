@@ -7,9 +7,16 @@ using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 using Newtonsoft.Json;
+using UnityEngine.UI;
+using TMPro;
+using System.Threading;
+using System.Threading.Tasks;
+using UnityEngine.SceneManagement;
+using CielaSpike;
+
 public class PlayersController : MonoBehaviour
 {
-
+    [SerializeField] TextMeshProUGUI StatusText;
     Dictionary<int, GameObject> redPawns = new Dictionary<int, GameObject>();
     Dictionary<int, GameObject> bluePawns = new Dictionary<int, GameObject>();
     Dictionary<int, GameObject> greenPawns = new Dictionary<int, GameObject>();
@@ -24,16 +31,26 @@ public class PlayersController : MonoBehaviour
     [SerializeField]
     ClientHandler CH;
     SceneChanger SC;
+    ThreadController TC;
+    int returnDice = 0;
+
+
     void Start()
     {
-        CH = GameObject.FindWithTag("Client").GetComponent<ClientHandler>();
+    }
+    private void Awake()
+    {
+        TC = GameObject.Find("ThreadController").GetComponent<ThreadController>();
         SC = GameObject.Find("SceneChanger").GetComponent<SceneChanger>();
+        CH = GameObject.Find("ClientHandler").GetComponent<ClientHandler>();
+        GetPawns();
         StartGame(SC.GetData());
     }
 
     private void StartGame(JObject jObject)
     {
-        if (jObject["Type"].ToString() == "New")
+        Debug.Log(jObject);
+        if (jObject["Type"].ToString() == "New") 
         {
             NewGame(int.Parse(jObject["Players"].ToString()));
         }
@@ -52,12 +69,25 @@ public class PlayersController : MonoBehaviour
     public void NewGame(int Players)
     {
         this.players = Players;
+
+        WaitForStartAsync(); 
     }
+
+    private void WaitForStartAsync()
+    {
+        var reply = CH.WaitForStart();
+        if (reply["Type"].ToString() == "start")
+        {
+            MakeTurn();
+
+        }
+    }
+
     public void ContinueGame()
     {
         var JsonReply = LoadFile();
         this.players = int.Parse(JsonReply["Players"].ToString());
-        GetPawns();
+        
         GameObject pawn;
         int tile;
         for (int i = 1; i < 5; i++)
@@ -105,11 +135,13 @@ public class PlayersController : MonoBehaviour
     }
     private void ChangeTurn()
     {
-        playerTurn++;
-        if (playerTurn > players)
+        this.playerTurn++;
+        if (this.playerTurn > this.players)
         {
-            playerTurn = 1;
+            this.playerTurn = 1;
         }
+        StatusText.text = "Player: " + this.playerTurn;
+        StartTurn();
     }
     public void GetPawns()
     {
@@ -192,23 +224,47 @@ public class PlayersController : MonoBehaviour
         pawn.GetComponent<PlayerController>().MovePawn(diceRoll);
     }
 
-    public void MakeTurn()
+
+    void StartTurn()
     {
-        int dice = 0;
-        dice = CH.getDice();
+        CH.getDice();
+    }
+    public void MakeTurn(DiceData diceData)
+{
+        int dice = diceData.dice;
         if (dice == 6)
         {
             if (HaveUnSpawnedPawns(playerTurn))
             {
-                int option = CH.SpawnOrMoveQuestion();
-                if (option == 1)
-                {
-                    SpawnPawn();
+                var spawnedpawns = GetSpawnedPawns();
+                Debug.Log(spawnedpawns.Count);
+                if (spawnedpawns.Count > 0) { 
+                    int option = CH.SpawnOrMoveQuestion();
+                    if (option == 1)
+                    {
+                        SpawnPawn();
+                    }
+                    else
+                    {
+                        var movablepawns = GetMovablePawns(spawnedpawns, dice);
+                        int selected = CH.SendQuestionMovablePawns(movablepawns);
+                        MovePawn(selected, playerTurn, dice);
+                    }
                 }
                 else
                 {
-                    var spawnedpawns = GetSpawnedPawns();
-                    var movablepawns = GetMovablePawns(spawnedpawns, dice);
+                    SpawnPawn();
+                }
+            }
+        }
+        else
+        {
+            var spawnedpawns = GetSpawnedPawns();
+            if (spawnedpawns.Count > 0)
+            { 
+                var movablepawns = GetMovablePawns(spawnedpawns, dice);
+                if (movablepawns.Count > 0)
+                {
                     int selected = CH.SendQuestionMovablePawns(movablepawns);
                     MovePawn(selected, playerTurn, dice);
                 }
@@ -234,6 +290,7 @@ public class PlayersController : MonoBehaviour
 
     private List<GameObject> GetSpawnedPawns()
     {
+        
         var listofpawns = new List<GameObject>();
         GameObject pawn;
         Dictionary<int, GameObject> Pawns = new Dictionary<int, GameObject>();
@@ -255,7 +312,8 @@ public class PlayersController : MonoBehaviour
         for (int i = 1; i < 5; i++)
         {
             Pawns.TryGetValue(i, out pawn);
-            if (!pawn.GetComponent<PlayerController>().isOnSpawn())
+            bool stan = pawn.GetComponent<PlayerController>().isOnSpawn();
+            if (stan == true)
             {
                 listofpawns.Add(pawn);
             }
@@ -297,7 +355,7 @@ public class PlayersController : MonoBehaviour
 
     private bool HaveUnSpawnedPawns(int playerTurn)
     {
-
+       
         Dictionary<int, GameObject> Pawns = new Dictionary<int, GameObject>();
         switch (playerTurn)
         {
@@ -336,7 +394,7 @@ public class PlayersController : MonoBehaviour
         string data = "{ \"Players\": " + players + ",";
         int tile;
         GameObject pawn;
-        GetPawns();
+        
         for (int i = 1; i < 5; i++)
         {
             data = data + "\"" + i + "\":{";

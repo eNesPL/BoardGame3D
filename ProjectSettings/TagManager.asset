@@ -10,6 +10,7 @@ TagManager:
   - GreenPawn
   - BluePawn
   - Client
+  - status
   layers:
   - Default
   - TransparentFX

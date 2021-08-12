@@ -11,39 +11,42 @@ public class ClientHandler : MonoBehaviour
 {
     // Start is called before the first frame update
     Client client = new Client();
+    
     PlayersController PC;
     ThreadController TC;
+    SceneChanger SC;
+    private JObject cmd = null;
+    string ReturnValue;
+    string SendingCommand;
+
     private void Awake()
     {
+        client.OnGetDiceValue += PC.MakeTurn;
         DontDestroyOnLoad(this.gameObject);
     }
-    async Task StartAsync()
+
+    private void StartAsync()
     {
-
-            TC = GameObject.Find("ThreadController").GetComponent<ThreadController>();
-            SceneChanger SC = GameObject.Find("SceneChanger").GetComponent<SceneChanger>();
-
-            bool status = await Task.Run(() =>
-            {
-                return client.FindServer(client);
-            });
-            Task.WaitAll();
+            
+            bool status = client.FindServer(client);
             if (status == true)
             {
                 Debug.Log("connected");
-
-                var reply = Task.Run(() =>
-                {
-                    return client.ReplyHandler();
-                });
-                var JsonReply = reply.Result;
+                var JsonReply = client.ReplyHandler();
+                Debug.Log(JsonReply);
                 SC.SetJson(JsonReply);
-            }
+             }
         
+
     }
     private void Start()
     {
-        StartAsync();
+        SC = GameObject.Find("SceneChanger").GetComponent<SceneChanger>();
+        TC = GameObject.Find("ThreadController").GetComponent<ThreadController>();
+
+        Thread SocketHandler = new Thread(StartAsync);
+        SocketHandler.Start();
+        TC.Threads.Add(SocketHandler);
     }
     void OnApplicationQuit()
     {
@@ -62,21 +65,12 @@ public class ClientHandler : MonoBehaviour
 
     public int getDice()
     {
-        var dicereader = Task<int>.Run(() => {
            return client.GetDice();
-        });
-        return dicereader.Result;
     }
 
-    public void SendTest()
-    {
-        new Thread(() => {
-            client.Test();
-        }).Start();
-    }
 
    public int SpawnOrMoveQuestion()
-    {
+    {       
             string option = client.SendCommand("SpawnOrMove");
             if (option == "spawn") { return 1; }
             if (option == "move") { return 2; }
@@ -94,4 +88,13 @@ public class ClientHandler : MonoBehaviour
         string reply = client.SendCommand(command);
         return int.Parse(reply);
     }
+
+    public JObject WaitForStart()
+    {
+            JObject reply = client.ReplyHandler();
+        return reply;
+
+    }
+
+
 }

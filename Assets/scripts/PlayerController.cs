@@ -182,7 +182,7 @@ public class PlayerController : MonoBehaviour
 
     public bool isOnSpawn()
     {
-        return spawned;
+        return !spawned;
     }
 
     public void Spawn()
