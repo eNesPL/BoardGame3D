@@ -4,10 +4,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityToolbag;
 
 public class SceneChanger : MonoBehaviour
 {
     ClientHandler CH;
+    [SerializeField]
     JObject JsonConfig;
     // Start is called before the first frame update
     void Start()
@@ -34,6 +36,6 @@ public class SceneChanger : MonoBehaviour
     public void SetJson(JObject Json)
     {
         this.JsonConfig = Json;
-        SceneManager.LoadScene(1);
+        Dispatcher.Invoke(() => SceneManager.LoadScene(1));
     }
 }

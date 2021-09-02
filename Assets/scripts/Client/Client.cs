@@ -20,7 +20,9 @@ public class Client
     SocketType.Stream,
     ProtocolType.Tcp);
     public event Action<DiceData> OnGetDiceValue = delegate { };
-
+    public event Action<JObject> returnJobiekt = delegate { };
+    public event Action returnFunc = delegate { };
+    public List<Cmd> cmds = new List<Cmd>();
     public bool Connect(string host, int port)
     {
         try {
@@ -97,6 +99,40 @@ public class Client
         }
     }
 
+    public string SendCommand(string command, bool hasReplay)
+    {
+        try
+        {
+            int bytesRec = 0;
+            byte[] msg = Encoding.ASCII.GetBytes(command);
+            this.s.Send(msg);
+            if (hasReplay)
+            {
+                string reply = "";
+                if (reply == "")
+                {
+                    bytesRec = this.s.Receive(bytes);
+                    while (bytesRec == 0)
+                    {
+                    }
+
+                    reply = Encoding.ASCII.GetString(bytes, 0, bytesRec);
+                    reply = reply.Replace("?", "");
+                    Debug.LogError(reply);
+                }
+
+                Debug.LogError(reply);
+                return reply;
+            }
+            else return "";
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e);
+            Debug.Log("Connection lost");
+            return "";
+        }
+    }
     public void GetDice()
     {
         Debug.LogError(this.s.Connected);
@@ -129,7 +165,7 @@ public class Client
             Debug.Log(e);
             Debug.Log("Connection lost");
             DiceData data = new DiceData(0);
-            Dispatcher.Invoke(() => OnGetDiceValue?.Invoke(data));
+            
         }
         
     }
@@ -180,4 +216,46 @@ public class Client
         return false;
     }
 
+
+    public void CommandHandler(Cmd cmd)
+    {
+        try
+        {
+            Debug.Log(cmd.cmd);
+            if (cmd.hasReturn == true)
+            {
+                var reply = SendCommand(cmd.cmd);
+                var JsonReply = JObject.Parse(reply);
+                if (cmd.JObfunc != null)
+                {
+                    Debug.Log("Przed");
+                    Debug.Log(JsonReply);
+                    Dispatcher.Invoke(() => cmd.JObfunc.Invoke(JsonReply));
+                    Debug.Log("Po");
+                }
+            }
+            else
+            {
+                Debug.Log(cmd.func.Method);
+                var reply = SendCommand(cmd.cmd,cmd.hasReturn);
+                if (cmd.func != null)
+                {
+                    Debug.Log("Przed");
+                    Dispatcher.Invoke(() => cmd.func.Invoke());
+                    Debug.Log("Po");
+                }
+                else
+                {
+                    Debug.Log("noFUCKcion");
+                }
+
+            }
+        }
+        catch(Exception e)
+        {
+            Debug.Log(e);
+        }
+    }
 }
+
+

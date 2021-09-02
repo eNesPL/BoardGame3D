@@ -28,8 +28,12 @@ public class Tile : MonoBehaviour
         Debug.Log(Player.GetPlayerID() + " " + this.tileID);
         if (this.occupied)
         {
-            this.PlayerOnMe.KillMe();
-            this.PlayerOnMe = Player;
+            if (this.PlayerOnMe.GetPlayerID() != Player.GetPlayerID())
+            {
+                this.PlayerOnMe.KillMe();
+                this.PlayerOnMe = Player;
+            }
+
         }
         else
         {
@@ -57,5 +61,10 @@ public class Tile : MonoBehaviour
     public virtual bool IsEnding()
     {
         return false;
+    }
+
+    public int GetPlayerOnMe()
+    {
+        return PlayerOnMe.GetPlayerID();
     }
 }

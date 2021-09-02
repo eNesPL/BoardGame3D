@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityToolbag;
 
 public class ClientHandler : MonoBehaviour
 {
@@ -15,19 +16,18 @@ public class ClientHandler : MonoBehaviour
     PlayersController PC;
     ThreadController TC;
     SceneChanger SC;
-    private JObject cmd = null;
-    string ReturnValue;
-    string SendingCommand;
+   
 
     private void Awake()
     {
-        client.OnGetDiceValue += PC.MakeTurn;
+        
         DontDestroyOnLoad(this.gameObject);
     }
 
     private void StartAsync()
     {
-            
+        
+ 
             bool status = client.FindServer(client);
             if (status == true)
             {
@@ -35,18 +35,19 @@ public class ClientHandler : MonoBehaviour
                 var JsonReply = client.ReplyHandler();
                 Debug.Log(JsonReply);
                 SC.SetJson(JsonReply);
-             }
-        
+            }
+
 
     }
+
     private void Start()
     {
         SC = GameObject.Find("SceneChanger").GetComponent<SceneChanger>();
         TC = GameObject.Find("ThreadController").GetComponent<ThreadController>();
-
         Thread SocketHandler = new Thread(StartAsync);
         SocketHandler.Start();
         TC.Threads.Add(SocketHandler);
+        
     }
     void OnApplicationQuit()
     {
@@ -57,21 +58,35 @@ public class ClientHandler : MonoBehaviour
 #endif
     }
 
+    internal void AddOnGetDiceValue(Action<DiceData> makeTurn)
+    {
+        client.OnGetDiceValue += makeTurn;
+    }
+
     // Update is called once per frame
     void Update()
     {
         
     }
 
-    public int getDice()
+    public void getDice()
     {
-           return client.GetDice();
+        var t = new Thread(() => { client.GetDice(); });
+        TC.Threads.Add(t);
+        t.Start();
+        
     }
 
-
+    public void setWaiting()
+    {
+        SendCommand("WaitForEnd");
+    }
    public int SpawnOrMoveQuestion()
     {       
             string option = client.SendCommand("SpawnOrMove");
+            var JsonReply = JObject.Parse(option);
+            option = JsonReply["Option"].ToString();
+             Debug.Log(option);
             if (option == "spawn") { return 1; }
             if (option == "move") { return 2; }
             return 2;
@@ -79,14 +94,15 @@ public class ClientHandler : MonoBehaviour
 
     internal int SendQuestionMovablePawns(List<GameObject> movablepawns)
     {
-        string command = "";
-        foreach(var pawn in movablepawns)
+        string command = "MoveQuestion;";
+        foreach (var pawn in movablepawns)
         {
             var r = pawn.GetComponent<PlayerController>().GetPawnNumber();
             command = command + r + ";";
         }
         string reply = client.SendCommand(command);
-        return int.Parse(reply);
+        var JsonReply = JObject.Parse(reply);
+        return int.Parse(JsonReply["MovePawn"].ToString());
     }
 
     public JObject WaitForStart()
@@ -96,5 +112,25 @@ public class ClientHandler : MonoBehaviour
 
     }
 
+    public void SendCommand(string cmd, Action func)
+    {
+        var t = new Thread(() => { client.CommandHandler(new Cmd(cmd,false, func)); });
+        TC.Threads.Add(t);
+        t.Start();
+    }
+
+    public void SendCommand(string cmd,bool hasReturn, Action<JObject> func)
+    {
+        var t = new Thread(() => { client.CommandHandler(new Cmd(cmd, hasReturn, func)); });
+        TC.Threads.Add(t);
+        t.Start();
+    }
+
+    public void SendCommand(string cmd)
+    {
+        var t = new Thread(() => { client.CommandHandler(new Cmd(cmd)); });
+        TC.Threads.Add(t);
+        t.Start();
+    }
 
 }

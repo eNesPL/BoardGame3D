@@ -13,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine.SceneManagement;
 using CielaSpike;
+using UnityToolbag;
 
 public class PlayersController : MonoBehaviour
 {
@@ -33,6 +34,7 @@ public class PlayersController : MonoBehaviour
     SceneChanger SC;
     ThreadController TC;
     int returnDice = 0;
+    TileController TiC;
 
 
     void Start()
@@ -43,6 +45,8 @@ public class PlayersController : MonoBehaviour
         TC = GameObject.Find("ThreadController").GetComponent<ThreadController>();
         SC = GameObject.Find("SceneChanger").GetComponent<SceneChanger>();
         CH = GameObject.Find("ClientHandler").GetComponent<ClientHandler>();
+        TiC = GameObject.Find("TileController").GetComponent<TileController>();
+        CH.AddOnGetDiceValue(MakeTurn);
         GetPawns();
         StartGame(SC.GetData());
     }
@@ -69,8 +73,9 @@ public class PlayersController : MonoBehaviour
     public void NewGame(int Players)
     {
         this.players = Players;
-
-        WaitForStartAsync(); 
+        Thread t = new Thread(WaitForStartAsync);
+        TC.Threads.Add(t);
+        t.Start();
     }
 
     private void WaitForStartAsync()
@@ -78,8 +83,7 @@ public class PlayersController : MonoBehaviour
         var reply = CH.WaitForStart();
         if (reply["Type"].ToString() == "start")
         {
-            MakeTurn();
-
+            Dispatcher.Invoke(() => StartTurn());
         }
     }
 
@@ -132,6 +136,17 @@ public class PlayersController : MonoBehaviour
             }
         }
 
+    }
+
+    private void ChangeTurn(JObject ob)
+    {
+        this.playerTurn++;
+        if (this.playerTurn > this.players)
+        {
+            this.playerTurn = 1;
+        }
+        StatusText.text = "Player: " + this.playerTurn;
+        StartTurn();
     }
     private void ChangeTurn()
     {
@@ -227,22 +242,33 @@ public class PlayersController : MonoBehaviour
 
     void StartTurn()
     {
-        CH.getDice();
+        CH.SendCommand("RollDiceMSG",CH.getDice);
     }
     public void MakeTurn(DiceData diceData)
 {
         int dice = diceData.dice;
         if (dice == 6)
         {
+           
             if (HaveUnSpawnedPawns(playerTurn))
             {
                 var spawnedpawns = GetSpawnedPawns();
                 Debug.Log(spawnedpawns.Count);
-                if (spawnedpawns.Count > 0) { 
-                    int option = CH.SpawnOrMoveQuestion();
-                    if (option == 1)
+                if (spawnedpawns.Count > 0) {
+                    if (!TiC.GetTile(TiC.GetStartingTile(playerTurn)).GetComponent<StartingTile>().IsOccupied())
                     {
-                        SpawnPawn();
+                        int option = CH.SpawnOrMoveQuestion();
+                        if (option == 1)
+                        {
+                            SpawnPawn();
+                        }
+                        else
+                        {
+                            var movablepawns = GetMovablePawns(spawnedpawns, dice);
+                            int selected = CH.SendQuestionMovablePawns(movablepawns);
+
+                            MovePawn(selected, playerTurn, dice);
+                        }
                     }
                     else
                     {
@@ -270,8 +296,15 @@ public class PlayersController : MonoBehaviour
                 }
             }
         }
-        ChangeTurn();
+        EndTurn();
     }
+
+    public void EndTurn()
+    {
+        CH.SendCommand("TakeDice",true,ChangeTurn);
+    }
+
+
 
     private List<GameObject> GetMovablePawns(List<GameObject> spawnedpawns, int dice)
     {
@@ -313,7 +346,7 @@ public class PlayersController : MonoBehaviour
         {
             Pawns.TryGetValue(i, out pawn);
             bool stan = pawn.GetComponent<PlayerController>().isOnSpawn();
-            if (stan == true)
+            if (stan == false)
             {
                 listofpawns.Add(pawn);
             }
@@ -343,7 +376,7 @@ public class PlayersController : MonoBehaviour
         for (int i = 1; i < 5; i++)
         {
             GameObject pawn;
-            Pawns.TryGetValue(1, out pawn);
+            Pawns.TryGetValue(i, out pawn);
             var pwn = pawn.GetComponent<PlayerController>();
             if (pwn.isOnSpawn())
             {
@@ -375,8 +408,11 @@ public class PlayersController : MonoBehaviour
         for (int i = 1; i < 5; i++)
         {
             GameObject pawn;
-            Pawns.TryGetValue(1, out pawn);
-            if (pawn.GetComponent<PlayerController>().isOnSpawn())
+            Pawns.TryGetValue(i, out pawn);
+            PlayerController pawnpc = pawn.GetComponent<PlayerController>();
+            int pawnnum = pawnpc.GetPawnNumber();
+            Debug.Log("Is Pawn with num =" + pawnnum.ToString() + " on spawn? = " + pawnpc.isOnSpawn()) ;
+            if (pawnpc.isOnSpawn())
             {
                 return true;
             }

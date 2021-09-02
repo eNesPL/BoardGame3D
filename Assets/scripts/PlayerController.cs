@@ -20,6 +20,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     TileController TC = null;
     private Vector3 goal;
+    public ClientHandler CH;
+    public PlayersController PS;
     private bool isMoving = false;
     [SerializeField]
     private int StartingTile = 1;
@@ -29,9 +31,8 @@ public class PlayerController : MonoBehaviour
     {
         TC = GameObject.FindObjectOfType<TileController>();
         goal = transform.position;
-        //while(TC == null)
-        //GameObject StarterTile = TC.GetTile(this.StartingTile);
-        //StarterTile.GetComponent<Tile>().StayOnMe(this);
+        CH = GameObject.Find("ClientHandler").GetComponent<ClientHandler>();
+        PS = GameObject.Find("PlayersController").GetComponent<PlayersController>();
     }
     // Update is called once per frame
     void Update()
@@ -55,6 +56,8 @@ public class PlayerController : MonoBehaviour
     }
     public void KillMe()
     {
+        this.TileID = 0;
+        this.spawned = false;
         this.ReturnOnStart();
         
     }
@@ -102,34 +105,37 @@ public class PlayerController : MonoBehaviour
 
     public bool CanIMove(int diceroll)
     {
-        if (TC.GetTile(TileID + diceroll) != null)
+        try
         {
-            if (this.TileID + diceroll > TC.GetEndingTile(this.playerID))
+            Tile LastTile = TC.GetTile(this.GetActualTile() + diceroll).GetComponent<Tile>();
+            if (LastTile.IsOccupied())
             {
-                int left = TC.GetEndingTile(this.playerID) - this.TileID;
-                diceroll = left-diceroll;
-                int lasttileid = 50 * this.playerID + diceroll;
-                if(lasttileid>50*this.playerID+4){
+                if (LastTile.GetPlayerOnMe() == this.playerID)
+                {
                     return false;
                 }
-                return true;
             }
-        }
-        else
-        {
-            if (this.TileID + diceroll > TC.GetEndingTile(this.playerID))
+            if (this.TileID < TC.GetEndingTile(this.playerID))
             {
-                int left = TC.GetEndingTile(this.playerID) - this.TileID;
-                diceroll = diceroll-left;
-                int lasttileid = 50 * this.playerID + diceroll;
-                if(lasttileid>50*this.playerID+4){
-                    return false;
+                if (this.TileID + diceroll > TC.GetEndingTile(this.playerID))
+                {
+                    int left = TC.GetEndingTile(this.playerID) - this.TileID;
+                    diceroll = left - diceroll;
+                    int lasttileid = 50 * this.playerID + diceroll;
+                    if (lasttileid > 50 * this.playerID + 4)
+                    {
+                        return false;
+                    }
+                    return true;
                 }
-                return true;
             }
+            return false;
         }
-        return true;
-        
+        catch (Exception e)
+        {
+            Debug.LogError(e);
+            return true;
+        }
     }
 
     int GetNextTile()
@@ -153,6 +159,10 @@ public class PlayerController : MonoBehaviour
             NextTile = thisTile.GetComponent<Tile>().GetID() + 1;
         }
         Debug.Log("NEXT TILE: " + NextTile);
+        if(NextTile>40 && NextTile < 50)
+        {
+            NextTile = NextTile - 40;
+        }
         return NextTile;
     }
 
@@ -169,7 +179,7 @@ public class PlayerController : MonoBehaviour
                 goal = nextTile.transform.position;
                 isMoving = true;
                 nextTile.GetComponent<Tile>().StayOnMe(this);
-
+                CH.SendCommand("MovingPawn");
                 while (isMoving)
                 {
                     yield return null;
@@ -188,6 +198,7 @@ public class PlayerController : MonoBehaviour
     public void Spawn()
     {
         GameObject start = TC.GetTile(TC.GetStartingTile(this.playerID));
+        this.TileID = start.GetComponent<Tile>().GetID();
         this.transform.position = start.transform.position;
         start.GetComponent<Tile>().StayOnMe(this);
         this.spawned = true;
