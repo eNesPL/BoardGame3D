@@ -37,5 +37,6 @@ public class SceneChanger : MonoBehaviour
     {
         this.JsonConfig = Json;
         Dispatcher.Invoke(() => SceneManager.LoadScene(1));
+        Dispatcher.Invoke(() => CH.AfterSceneChane());
     }
 }

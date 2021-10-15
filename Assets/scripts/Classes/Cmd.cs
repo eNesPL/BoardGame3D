@@ -11,6 +11,7 @@ public class Cmd
     public bool hasReturn=false;
     public Action<JObject> JObfunc;
     public Action func;
+    public int dice;
     public Cmd(string cmd)
     {
         this.cmd = cmd;

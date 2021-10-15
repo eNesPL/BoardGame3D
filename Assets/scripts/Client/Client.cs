@@ -63,6 +63,7 @@ public class Client
         {
             Debug.Log(e);
             Debug.Log("Connection lost");
+            Dispatcher.Invoke(() => Application.Quit());
             return null;
         }
         return null;
@@ -217,7 +218,7 @@ public class Client
     }
 
 
-    public void CommandHandler(Cmd cmd)
+    public void CommandHandler(Cmd cmd, int dice = 0)
     {
         try
         {
@@ -230,7 +231,15 @@ public class Client
                 {
                     Debug.Log("Przed");
                     Debug.Log(JsonReply);
-                    Dispatcher.Invoke(() => cmd.JObfunc.Invoke(JsonReply));
+                    if (dice == 0)
+                    {
+                        Dispatcher.Invoke(() => cmd.JObfunc.Invoke(JsonReply));
+                    }
+                    else
+                    {
+                        JsonReply.Add("dice", new JValue(dice));
+                        Dispatcher.Invoke(() => cmd.JObfunc.Invoke(JsonReply));
+                    }
                     Debug.Log("Po");
                 }
             }
@@ -246,7 +255,7 @@ public class Client
                 }
                 else
                 {
-                    Debug.Log("noFUCKcion");
+                    Debug.Log("nofun");
                 }
 
             }

@@ -53,16 +53,23 @@ public class PlayersController : MonoBehaviour
 
     private void StartGame(JObject jObject)
     {
-        Debug.Log(jObject);
-        if (jObject["Type"].ToString() == "New") 
+        try
         {
-            NewGame(int.Parse(jObject["Players"].ToString()));
+            if (jObject["Type"].ToString() == "New")
+            {
+                NewGame(int.Parse(jObject["Players"].ToString()));
+            }
+            if (jObject["Type"].ToString() == "Continue")
+            {
+                ContinueGame();
+            }
         }
-        if (jObject["Type"].ToString() == "Continue")
+        catch
         {
-            ContinueGame();
+            Application.Quit();
         }
     }
+
 
     // Update is called once per frame
     void Update()
@@ -90,8 +97,7 @@ public class PlayersController : MonoBehaviour
     public void ContinueGame()
     {
         var JsonReply = LoadFile();
-        this.players = int.Parse(JsonReply["Players"].ToString());
-        
+        NewGame(int.Parse(JsonReply["Players"].ToString()));
         GameObject pawn;
         int tile;
         for (int i = 1; i < 5; i++)
@@ -231,7 +237,7 @@ public class PlayersController : MonoBehaviour
         }
     }
 
-    private void MovePawn(int pawnID, int playerID, int diceRoll)
+    public void MovePawn(int pawnID, int playerID, int diceRoll)
     {
         Dictionary<int, GameObject> pawns = GetDict(playerID);
         GameObject pawn;
@@ -245,59 +251,80 @@ public class PlayersController : MonoBehaviour
         CH.SendCommand("RollDiceMSG",CH.getDice);
     }
     public void MakeTurn(DiceData diceData)
+    {
+        var t = new Thread(() => { MakeTurn_r(diceData); });
+        TC.Threads.Add(t);
+        t.Start();
+    }
+    public void MakeTurn_r(DiceData diceData)
 {
         int dice = diceData.dice;
         if (dice == 6)
         {
-           
-            if (HaveUnSpawnedPawns(playerTurn))
-            {
-                var spawnedpawns = GetSpawnedPawns();
-                Debug.Log(spawnedpawns.Count);
-                if (spawnedpawns.Count > 0) {
-                    if (!TiC.GetTile(TiC.GetStartingTile(playerTurn)).GetComponent<StartingTile>().IsOccupied())
-                    {
-                        int option = CH.SpawnOrMoveQuestion();
-                        if (option == 1)
-                        {
-                            SpawnPawn();
-                        }
-                        else
-                        {
-                            var movablepawns = GetMovablePawns(spawnedpawns, dice);
-                            int selected = CH.SendQuestionMovablePawns(movablepawns);
-
-                            MovePawn(selected, playerTurn, dice);
-                        }
-                    }
-                    else
-                    {
-                        var movablepawns = GetMovablePawns(spawnedpawns, dice);
-                        int selected = CH.SendQuestionMovablePawns(movablepawns);
-                        MovePawn(selected, playerTurn, dice);
-                    }
-                }
-                else
-                {
-                    SpawnPawn();
-                }
-            }
+            Dispatcher.Invoke(() => MakeTurn_Dispached(HaveUnSpawnedPawns(playerTurn),dice));
         }
         else
         {
             var spawnedpawns = GetSpawnedPawns();
             if (spawnedpawns.Count > 0)
-            { 
-                var movablepawns = GetMovablePawns(spawnedpawns, dice);
-                if (movablepawns.Count > 0)
-                {
-                    int selected = CH.SendQuestionMovablePawns(movablepawns);
-                    MovePawn(selected, playerTurn, dice);
-                }
+            {
+                MovablePawnsHandler(spawnedpawns, dice);
             }
         }
-        EndTurn();
+        
     }
+
+    public void MakeTurn_Dispached(bool UnSpawnedPawns,int dice)
+    {
+        var spawnedpawns = GetSpawnedPawns();
+        Debug.Log(spawnedpawns.Count);
+        if (UnSpawnedPawns)
+        {
+            if (spawnedpawns.Count > 0)
+            {
+                if (!TiC.GetTile(TiC.GetStartingTile(playerTurn)).GetComponent<StartingTile>().IsOccupied())
+                {
+                    CH.SpawnOrMoveQuestion(spawnedpawns, dice);
+                }
+                else
+                {
+                    MovablePawnsHandler(spawnedpawns, dice);
+                }
+            }
+            else
+            {
+                Dispatcher.Invoke(() => SpawnPawn());
+            }
+        }
+        else
+        {
+            if (spawnedpawns.Count > 0)
+            {
+                MovablePawnsHandler(spawnedpawns, dice);
+            }
+        }
+    }
+    public void MovablePawnsHandler2(List<GameObject> spawnedpawns, int dice)
+    {
+        var movablepawns = GetMovablePawns(spawnedpawns, dice);
+        if (movablepawns.Count() != 0)
+        {
+            string command = "MoveQuestion;";
+            foreach (var pawn in movablepawns)
+            {
+                var r = pawn.GetComponent<PlayerController>().GetPawnNumber();
+                command = command + r + ";";
+            }
+            CH.SendQuestionMovablePawns(dice,command);
+            
+        }
+ 
+    }
+    public void MovablePawnsHandler(List<GameObject> spawnedpawns, int dice)
+    {
+        Dispatcher.Invoke(() => MovablePawnsHandler2(spawnedpawns, dice));
+    }
+
 
     public void EndTurn()
     {
@@ -355,7 +382,7 @@ public class PlayersController : MonoBehaviour
         return listofpawns;
     }
 
-    private void SpawnPawn()
+    public void SpawnPawn()
     {
         Dictionary<int, GameObject> Pawns = new Dictionary<int, GameObject>();
         switch (playerTurn)
@@ -384,6 +411,7 @@ public class PlayersController : MonoBehaviour
                 break;
             }
         }
+        EndTurn();
     }
 
     private bool HaveUnSpawnedPawns(int playerTurn)
@@ -426,6 +454,7 @@ public class PlayersController : MonoBehaviour
         FileStream file;
         if (File.Exists(destination)) file = File.OpenWrite(destination);
         else file = File.Create(destination);
+        File.WriteAllText(destination, string.Empty);
         file.Close();
         string data = "{ \"Players\": " + players + ",";
         int tile;
@@ -483,20 +512,34 @@ public class PlayersController : MonoBehaviour
 
     public JObject LoadFile()
     {
-        string destination = Application.persistentDataPath + "/save.dat";
-        FileStream file;
-
-        if (File.Exists(destination)) file = File.OpenRead(destination);
-        else
+        try
         {
-            Debug.LogError("File not found");
+            string destination = Application.persistentDataPath + "/save.dat";
+            FileStream file;
+
+            if (File.Exists(destination)) file = File.OpenRead(destination);
+            else
+            {
+                Debug.LogError("File not found");
+                return null;
+            }
+            BinaryFormatter bf = new BinaryFormatter();
+            StreamReader reader = new StreamReader(destination);
+            string data = reader.ReadLine();
+            Debug.Log(data);
+            var JsonData = JObject.Parse(data);
+            file.Close();
+            return JsonData;
+        }
+        catch(Exception e)
+        {
+            Debug.LogError(e);
             return null;
         }
-        BinaryFormatter bf = new BinaryFormatter();
-        StreamReader reader = new StreamReader(destination);
-        string data = reader.ReadLine();
-        var JsonData = JObject.Parse(data);
-        file.Close();
-        return JsonData;
+    }
+    public int GetPlayerTurn()
+    {
+        return playerTurn;
     }
 }
+

@@ -105,17 +105,47 @@ public class PlayerController : MonoBehaviour
 
     public bool CanIMove(int diceroll)
     {
+        Tile LastTile;
         try
         {
-            Tile LastTile = TC.GetTile(this.GetActualTile() + diceroll).GetComponent<Tile>();
-            if (LastTile.IsOccupied())
+            if (this.GetActualTile() <= 40)
             {
-                if (LastTile.GetPlayerOnMe() == this.playerID)
+                if (this.GetActualTile() + diceroll > 40)
                 {
-                    return false;
+                    LastTile = TC.GetTile(this.GetActualTile() + diceroll - 40).GetComponent<Tile>();
                 }
+                else
+                {
+                    LastTile = TC.GetTile(this.GetActualTile() + diceroll).GetComponent<Tile>();
+                }
+                if (LastTile.IsOccupied())
+                {
+                    if (LastTile.GetPlayerOnMe() == this.playerID)
+                    {
+                        return false;
+                    }
+                }
+                if (this.TileID < TC.GetEndingTile(this.playerID))
+                {
+                    if (this.TileID + diceroll > TC.GetEndingTile(this.playerID))
+                    {
+                        int left = TC.GetEndingTile(this.playerID) - this.TileID;
+                        diceroll = left - diceroll;
+                        int lasttileid = 50 * this.playerID + diceroll;
+                        if (lasttileid > 50 * this.playerID + 4)
+                        {
+                            return false;
+                        }
+                        return true;
+                    }
+                }
+                if (GetNextTile() != 0)
+                {
+                    return true;
+                }
+                return false;
             }
-            if (this.TileID < TC.GetEndingTile(this.playerID))
+            else
             {
                 if (this.TileID + diceroll > TC.GetEndingTile(this.playerID))
                 {
@@ -128,13 +158,22 @@ public class PlayerController : MonoBehaviour
                     }
                     return true;
                 }
+                else
+                {
+                    int lasttileid = 50 * this.playerID + diceroll;
+                    if (lasttileid > 50 * this.playerID + 4)
+                    {
+                        return false;
+                    }
+                    return true;
+                }
             }
-            return false;
+
         }
         catch (Exception e)
         {
             Debug.LogError(e);
-            return true;
+            return false;
         }
     }
 
@@ -206,13 +245,20 @@ public class PlayerController : MonoBehaviour
 
     public void SetPosition(int TileID)
     {
-        this.spawned = true;
-        this.TileID = TileID;
-        GameObject Tile = TC.GetTile(this.TileID);
-        Debug.Log(Tile);
-        this.transform.position=Tile.transform.position;
-        Tile.GetComponent<Tile>().StayOnMe(this);
-
+        try
+        {
+            if(TC == null) { TC = GameObject.FindObjectOfType<TileController>(); }
+            this.spawned = true;
+            this.TileID = TileID;
+            GameObject Tile = TC.GetTile(this.TileID);
+            Debug.Log(Tile);
+            this.transform.position = Tile.transform.position;
+            Tile.GetComponent<Tile>().StayOnMe(this);
+        }
+        catch(Exception e)
+        {
+            Debug.LogError(e);
+        }
     }
 
 }
