@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -8,6 +9,11 @@ public class TileController : MonoBehaviour
     // Start is called before the first frame update
     [SerializeField]
     List<GameObject> ListOfTiles = new List<GameObject>();
+    List<GameObject> ListOfRedWinningTiles = new List<GameObject>();
+    List<GameObject> ListOfGreenWinningTiles = new List<GameObject>();
+    List<GameObject> ListOfBlueWinningTiles = new List<GameObject>();
+    List<GameObject> ListOfYellowWinningTiles = new List<GameObject>();
+    List<List<GameObject>> ListOfListsOfWinningTiles = new List<List<GameObject>>();
     private Dictionary<int, GameObject> Tiles = new Dictionary<int, GameObject>();
     [SerializeField]
     bool loading = true;
@@ -18,16 +24,13 @@ public class TileController : MonoBehaviour
         {
             Tiles.Add(g.GetComponent<Tile>().GetID(), g);
         }
-        this.loading = false;
-        
+        GetWinningTiles();
+
     }
 
     public GameObject GetTile(int TileID)
     {
-        while (loading)
-        {
-            Debug.Log("loading");
-        }
+        Debug.Log("loading");
         GameObject te;
         Tiles.TryGetValue(TileID, out te);
         return te;
@@ -58,5 +61,56 @@ public class TileController : MonoBehaviour
     void Update()
     {
         
+    }
+
+    internal bool isOnWinning(int playerID, int tileID)
+    {
+        if(tileID > 50 * playerID && tileID <= 50 * playerID + 4)
+        {
+            return true;
+        }
+        return false;
+    }
+    private void GetWinningTiles()
+    {
+        ListOfYellowWinningTiles = getWinningTilesPerPlayer(1);
+        ListOfRedWinningTiles = getWinningTilesPerPlayer(2);
+        ListOfBlueWinningTiles = getWinningTilesPerPlayer(3);
+        ListOfGreenWinningTiles = getWinningTilesPerPlayer(4);
+        ListOfListsOfWinningTiles.Add(ListOfYellowWinningTiles);
+        ListOfListsOfWinningTiles.Add(ListOfRedWinningTiles);
+        ListOfListsOfWinningTiles.Add(ListOfBlueWinningTiles);
+        ListOfListsOfWinningTiles.Add(ListOfGreenWinningTiles);
+    }
+    public int CheckWinningStatus()
+    {
+        int playerid = 1;
+        int status = 0;
+        foreach(var listOfWinningTiles in ListOfListsOfWinningTiles)
+        {
+            status = 0;
+            foreach(var winningtile in listOfWinningTiles)
+            {
+                if (winningtile.GetComponent<Tile>().IsOccupied())
+                {
+                    status += 1;
+                }
+                if (status == 4)
+                {
+                    return playerid;
+                }
+            }
+            playerid += 1;
+        }
+        return 0;
+    }
+    private List<GameObject> getWinningTilesPerPlayer(int playerID)
+    {
+        List<GameObject>listofWinningTiles = new List<GameObject>();
+        for (int i =1;i < 5; i++)
+        {
+            listofWinningTiles.Add(GetTile(50 * playerID + i));
+        }
+        return listofWinningTiles;
     }
 }

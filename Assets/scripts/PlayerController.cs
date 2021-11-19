@@ -149,14 +149,28 @@ public class PlayerController : MonoBehaviour
             {
                 if (this.TileID + diceroll > TC.GetEndingTile(this.playerID))
                 {
-                    int left = TC.GetEndingTile(this.playerID) - this.TileID;
-                    diceroll = left - diceroll;
-                    int lasttileid = 50 * this.playerID + diceroll;
-                    if (lasttileid > 50 * this.playerID + 4)
+                    if (!TC.isOnWinning(this.playerID, this.TileID))
                     {
-                        return false;
+
+                        int left = TC.GetEndingTile(this.playerID) - this.TileID;
+                        diceroll = left - diceroll;
+                        int lasttileid = 50 * this.playerID + diceroll;
+                        if (lasttileid > 50 * this.playerID + 4)
+                        {
+                            return false;
+                        }
+                        return true;
                     }
-                    return true;
+                    else
+                    {
+                        int lasttileid = 50 * this.playerID + 4;
+                        if (this.TileID + diceroll > lasttileid)
+                        {
+                            return false;
+                        }
+                        return true;
+                        
+                    }
                 }
                 else
                 {

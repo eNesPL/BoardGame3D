@@ -12,7 +12,7 @@ using UnityEngine.SceneManagement;
 using UnityToolbag;
 
 public class Client
-{
+{ 
 
     bool connected = false;
     byte[] bytes = new byte[1024];
@@ -176,9 +176,9 @@ public class Client
     {
         while (!connected)
         {
-                using (UdpClient listener = new UdpClient(112))
+                using (UdpClient listener = new UdpClient(2423))
                 {
-                    IPEndPoint groupEP = new IPEndPoint(IPAddress.Any, 112);
+                    IPEndPoint groupEP = new IPEndPoint(IPAddress.Any, 2423);
                     try
                     {
 
@@ -188,7 +188,7 @@ public class Client
                         Debug.Log($"Received broadcast from {groupEP} :");
                         try
                         {
-                            client.Connect(groupEP.Address.ToString(), 111);
+                            client.Connect(groupEP.Address.ToString(), 2422);
                             return true;
                         }
                         catch
@@ -220,6 +220,7 @@ public class Client
 
     public void CommandHandler(Cmd cmd, int dice = 0)
     {
+        Debug.LogError("CH: " + dice);
         try
         {
             Debug.Log(cmd.cmd);
@@ -237,7 +238,9 @@ public class Client
                     }
                     else
                     {
-                        JsonReply.Add("dice", new JValue(dice));
+                        Debug.LogError("SC2: " + dice);
+                        JsonReply.Add("dice", new JValue(dice.ToString()));
+                        Debug.LogError("SC2jr: " + JsonReply);
                         Dispatcher.Invoke(() => cmd.JObfunc.Invoke(JsonReply));
                     }
                     Debug.Log("Po");

@@ -27,7 +27,11 @@ public class Tile : MonoBehaviour
     {
         Debug.Log(Player.GetPlayerID() + " " + this.tileID);
         if (this.occupied)
-        {
+        {   
+            if(this.PlayerOnMe.GetPlayerID() == null)
+            {
+                this.PlayerOnMe = Player;
+            }
             if (this.PlayerOnMe.GetPlayerID() != Player.GetPlayerID())
             {
                 this.PlayerOnMe.KillMe();
@@ -48,6 +52,17 @@ public class Tile : MonoBehaviour
     public bool IsOccupied()
     {
         return occupied;
+    }
+    public bool IsOccupied(int playerID)
+    {
+        if(occupied && playerID == this.PlayerOnMe.GetPlayerID())
+        {
+            return true;
+        }
+        else
+        { 
+            return false;
+        }
     }
 
     public void ChangeTileStatus()

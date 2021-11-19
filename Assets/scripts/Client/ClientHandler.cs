@@ -20,7 +20,6 @@ public class ClientHandler : MonoBehaviour
 
     private void Awake()
     {
-        
         DontDestroyOnLoad(this.gameObject);
     }
 
@@ -32,16 +31,20 @@ public class ClientHandler : MonoBehaviour
             if (status == true)
             {
                 Debug.Log("connected");
-                var JsonReply = client.ReplyHandler();
-                Debug.Log(JsonReply);
-                SC.SetJson(JsonReply);
-            }
+                Dispatcher.Invoke(() => Starter());
+        }
 
 
     }
+    void Starter()
+    {
+        var JsonReply = client.ReplyHandler();
+        Debug.Log(JsonReply);
+        SC.SetJson(JsonReply);
+    }
     public void AfterSceneChane()
     {
-        PC = GameObject.Find("PlayersController").GetComponent<PlayersController>();
+       PC = GameObject.Find("PlayersController").GetComponent<PlayersController>();
     }
     private void Start()
     {
@@ -101,7 +104,7 @@ public class ClientHandler : MonoBehaviour
     }
     public void SendQuestionMovablePawns(int dice, string command)
     {
-        Debug.LogError(command);
+        Debug.LogError(command+" "+dice);
         SendCommand(command, true, SendQuestionMovablePawns_continue, dice);
     }
 
@@ -142,6 +145,7 @@ public class ClientHandler : MonoBehaviour
     }
     public void SendCommand(string cmd, bool hasReturn, Action<JObject> func, int dice)
     {
+        
         var t = new Thread(() => { client.CommandHandler(new Cmd(cmd, hasReturn, func),dice); });
         TC.Threads.Add(t);
         t.Start();

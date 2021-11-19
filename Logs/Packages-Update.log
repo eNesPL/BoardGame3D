@@ -57,3 +57,23 @@ The following packages were updated:
   com.unity.test-framework from version 1.1.22 to 1.1.27
   com.unity.textmeshpro from version 2.1.1 to 3.0.6
   com.unity.timeline from version 1.2.18 to 1.4.8
+
+=== Mon Nov 15 19:49:31 2021
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.collab-proxy from version 1.5.7 to 1.13.5
+  com.unity.ide.visualstudio from version 2.0.9 to 2.0.11
+  com.unity.ide.vscode from version 1.2.3 to 1.2.4
+  com.unity.test-framework from version 1.1.27 to 1.1.29
+
+=== Mon Nov 15 22:56:52 2021
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.ide.rider from version 2.0.7 to 3.0.7
+  com.unity.timeline from version 1.4.8 to 1.6.2

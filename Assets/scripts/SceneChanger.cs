@@ -11,6 +11,7 @@ public class SceneChanger : MonoBehaviour
     ClientHandler CH;
     [SerializeField]
     JObject JsonConfig;
+    public int winner = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -37,6 +38,12 @@ public class SceneChanger : MonoBehaviour
     {
         this.JsonConfig = Json;
         Dispatcher.Invoke(() => SceneManager.LoadScene(1));
-        Dispatcher.Invoke(() => CH.AfterSceneChane());
+    }
+
+    internal void Winner(int winnerid)
+    {
+        winner = winnerid;
+        Dispatcher.Invoke(() => SceneManager.LoadScene(2));
+        
     }
 }
