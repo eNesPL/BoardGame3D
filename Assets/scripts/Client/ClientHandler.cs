@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityToolbag;
-
+using TMPro;
 public class ClientHandler : MonoBehaviour
 {
     // Start is called before the first frame update
@@ -31,14 +31,20 @@ public class ClientHandler : MonoBehaviour
             if (status == true)
             {
                 Debug.Log("connected");
-                Dispatcher.Invoke(() => Starter());
+                Dispatcher.InvokeAsync(() => Starter());
         }
 
 
     }
     void Starter()
     {
-        var JsonReply = client.ReplyHandler();
+        TextMeshProUGUI tekst = GameObject.Find("S").GetComponent<TextMeshProUGUI>();
+        tekst.text = "Use RPi to controll";
+        SendCommand("WaitingForStart", true, Starter_r);
+    }
+
+    void Starter_r(JObject JsonReply)
+    {
         Debug.Log(JsonReply);
         SC.SetJson(JsonReply);
     }

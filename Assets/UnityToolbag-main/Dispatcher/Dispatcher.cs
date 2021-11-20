@@ -102,7 +102,6 @@ namespace UnityToolbag
 
         public void Update()
         {
-            Debug.Log("UpdateDISP");
             lock (_lockObject) {
                 while (_actions.Count > 0) {
                     _actions.Dequeue()();
