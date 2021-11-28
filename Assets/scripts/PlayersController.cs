@@ -279,6 +279,10 @@ public class PlayersController : MonoBehaviour
         {
             MovablePawnsHandler(spawnedpawns, dice);
         }
+        else
+        {
+            EndTurn();
+        }
     }
 
     public void MakeTurn_Dispached(bool UnSpawnedPawns,int dice)

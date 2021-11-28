@@ -30,7 +30,6 @@ public class TileController : MonoBehaviour
 
     public GameObject GetTile(int TileID)
     {
-        Debug.Log("loading");
         GameObject te;
         Tiles.TryGetValue(TileID, out te);
         return te;

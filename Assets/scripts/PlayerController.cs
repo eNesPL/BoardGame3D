@@ -232,7 +232,7 @@ public class PlayerController : MonoBehaviour
                 goal = nextTile.transform.position;
                 isMoving = true;
                 nextTile.GetComponent<Tile>().StayOnMe(this);
-                CH.SendCommand("MovingPawn");
+                //CH.SendCommand("MovingPawn");
                 while (isMoving)
                 {
                     yield return null;
