@@ -86,6 +86,17 @@ public class PlayersController : MonoBehaviour
         TC.Threads.Add(t);
         t.Start();
     }
+    public void NewGame(int Players,int turn)
+    {
+        Debug.Log(Players);
+        this.players = Players;
+        this.playerTurn = turn;
+        StatusText.text = "Player: " + this.playerTurn;
+        Debug.Log(GetPlayerTurn());
+        Thread t = new Thread(WaitForStartAsync);
+        TC.Threads.Add(t);
+        t.Start();
+    }
 
     private void WaitForStartAsync()
     {
@@ -100,49 +111,56 @@ public class PlayersController : MonoBehaviour
     public void ContinueGame()
     {
         var JsonReply = LoadFile();
-        NewGame(int.Parse(JsonReply["Players"].ToString()));
-        GameObject pawn;
-        int tile;
-        for (int i = 1; i < 5; i++)
+        if (JsonReply != null)
         {
-            for (int j = 1; j < 5; j++)
+            NewGame(int.Parse(JsonReply["Players"].ToString()), int.Parse(JsonReply["Turn"].ToString()));
+            GameObject pawn;
+            int tile;
+            for (int i = 1; i < 5; i++)
             {
-                switch (i)
+                for (int j = 1; j < 5; j++)
                 {
-                    case 1:
-                        yellowPawns.TryGetValue(j, out pawn);
-                        tile = int.Parse(JsonReply[i.ToString()][j.ToString()].ToString());
-                        if (tile != 0)
-                        {
-                            pawn.GetComponent<PlayerController>().SetPosition(tile);
-                        }
-                        break;
-                    case 2:
-                        redPawns.TryGetValue(j, out pawn);
-                        tile = int.Parse(JsonReply[i.ToString()][j.ToString()].ToString());
-                        if (tile != 0)
-                        {
-                            pawn.GetComponent<PlayerController>().SetPosition(tile);
-                        }
-                        break;
-                    case 3:
-                        bluePawns.TryGetValue(j, out pawn);
-                        tile = int.Parse(JsonReply[i.ToString()][j.ToString()].ToString());
-                        if (tile != 0)
-                        {
-                            pawn.GetComponent<PlayerController>().SetPosition(tile);
-                        }
-                        break;
-                    case 4:
-                        greenPawns.TryGetValue(j, out pawn);
-                        tile = int.Parse(JsonReply[i.ToString()][j.ToString()].ToString());
-                        if (tile != 0)
-                        {
-                            pawn.GetComponent<PlayerController>().SetPosition(tile);
-                        }
-                        break;
+                    switch (i)
+                    {
+                        case 1:
+                            yellowPawns.TryGetValue(j, out pawn);
+                            tile = int.Parse(JsonReply[i.ToString()][j.ToString()].ToString());
+                            if (tile != 0)
+                            {
+                                pawn.GetComponent<PlayerController>().SetPosition(tile);
+                            }
+                            break;
+                        case 2:
+                            redPawns.TryGetValue(j, out pawn);
+                            tile = int.Parse(JsonReply[i.ToString()][j.ToString()].ToString());
+                            if (tile != 0)
+                            {
+                                pawn.GetComponent<PlayerController>().SetPosition(tile);
+                            }
+                            break;
+                        case 3:
+                            bluePawns.TryGetValue(j, out pawn);
+                            tile = int.Parse(JsonReply[i.ToString()][j.ToString()].ToString());
+                            if (tile != 0)
+                            {
+                                pawn.GetComponent<PlayerController>().SetPosition(tile);
+                            }
+                            break;
+                        case 4:
+                            greenPawns.TryGetValue(j, out pawn);
+                            tile = int.Parse(JsonReply[i.ToString()][j.ToString()].ToString());
+                            if (tile != 0)
+                            {
+                                pawn.GetComponent<PlayerController>().SetPosition(tile);
+                            }
+                            break;
+                    }
                 }
             }
+        }
+        else
+        {
+            NewGame(4);
         }
 
     }
@@ -496,6 +514,7 @@ public class PlayersController : MonoBehaviour
         if (!File.Exists(destination)) file = File.Create(destination);
         File.WriteAllText(destination, string.Empty);
         string data = "{ \"Players\": " + players + ",";
+        data = data+" \"Turn\": " + playerTurn + ",";
         int tile;
         GameObject pawn;
         

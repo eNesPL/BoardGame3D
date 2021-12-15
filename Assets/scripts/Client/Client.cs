@@ -69,6 +69,19 @@ public class Client
         return null;
     }
 
+    public void SendCommandNoReply(string command)
+    {
+        try
+        {
+            int bytesRec = 0;
+            byte[] msg = Encoding.ASCII.GetBytes(command);
+            this.s.Send(msg);
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e);
+        }
+    }
     public string SendCommand(string command)
     {
         try
@@ -227,6 +240,7 @@ public class Client
             if (cmd.hasReturn == true)
             {
                 var reply = SendCommand(cmd.cmd);
+                Debug.LogError(reply);
                 var JsonReply = JObject.Parse(reply);
                 if (cmd.JObfunc != null)
                 {

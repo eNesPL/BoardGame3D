@@ -11,9 +11,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private int pawnNumber = 0;
     [SerializeField]
-    private int TileID = 1;
-    [SerializeField]
     private int DiceRoll = 5;
+    [SerializeField]
+    private int RememberTileID = 5;
     [SerializeField]
     private float speed = 5;
     // Start is called before the first frame update
@@ -27,6 +27,16 @@ public class PlayerController : MonoBehaviour
     private int StartingTile = 1;
     [SerializeField]
     private bool spawned = false;
+    public bool IsMoving
+    {
+        get => isMoving;
+        set => isMoving = value;
+
+    }
+    [SerializeField]
+    int TileID=0;
+
+
     void Start()
     {
         TC = GameObject.FindObjectOfType<TileController>();
@@ -37,12 +47,32 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isMoving)
+        if (IsMoving)
         {
             this.transform.position = Vector3.MoveTowards(transform.position, goal, (speed * Time.deltaTime));
             if (transform.position == goal)
             {
-                isMoving = false;
+                IsMoving = false;
+            }
+        }
+    }
+    public void setTileID(int tile)
+    {
+        this.TileID = tile;
+        int actualTile = GetActualTile();
+        if (actualTile == RememberTileID + DiceRoll || actualTile == (RememberTileID + DiceRoll) - 40)
+        {
+            StandOnLastTile();
+            PS.EndTurn();
+        }
+        Debug.Log(RememberTileID + "+" + DiceRoll + ">" + TC.GetEndingTile(this.playerID));
+        if(RememberTileID + DiceRoll > TC.GetEndingTile(this.playerID))
+        {
+            int left = RememberTileID + DiceRoll - TC.GetEndingTile(this.playerID);
+            if (actualTile == 50*this.playerID + left)
+            {
+                StandOnLastTile();
+                PS.EndTurn();
             }
         }
     }
@@ -63,12 +93,22 @@ public class PlayerController : MonoBehaviour
     }
     public void MovePawn(int roll)
     {
+        CH.SendCommandNoReply("MovingPawn");
+        RememberTileID = GetActualTile();
+        DiceRoll = roll;
+        Tile point = TC.GetTile(GetActualTile()).GetComponent<Tile>();
+        point.ChangeTileStatus();
         StartCoroutine(MoveMe(roll));
+        
     }
-    public void testmove()
+    private void StandOnLastTile()
     {
-        StartCoroutine(MoveMe(DiceRoll));
+        Tile T = TC.GetTile(GetActualTile()).GetComponent<Tile>();
+        Debug.Log(T.GetID());
+        T.StayOnMe(this);
+        Debug.Log(T);
     }
+
 
     private void ReturnOnStart()
     {
@@ -221,23 +261,20 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator MoveMe(int diceroll)
     {
-        if (isMoving == false && CanIMove(diceroll))
+        if (IsMoving == false && CanIMove(diceroll))
         {
             Debug.Log("THIS TILE: "+ this.TileID);
             for (int i = diceroll; i != 0; i--)
             {
-                GameObject thisTile = TC.GetTile(TileID);
                 GameObject nextTile = TC.GetTile(GetNextTile());
-                thisTile.GetComponent<Tile>().ChangeTileStatus();
                 goal = nextTile.transform.position;
-                isMoving = true;
-                nextTile.GetComponent<Tile>().StayOnMe(this);
-                //CH.SendCommand("MovingPawn");
-                while (isMoving)
+                IsMoving = true;
+                
+                while (IsMoving)
                 {
                     yield return null;
                 }
-                this.TileID = nextTile.GetComponent<Tile>().GetID();
+                setTileID(nextTile.GetComponent<Tile>().GetID());
                 Debug.Log("NEXT TILE: "+this.TileID);
             }
         }

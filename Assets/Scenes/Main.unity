@@ -563,7 +563,7 @@ GameObject:
   - component: {fileID: 93568723}
   - component: {fileID: 93568722}
   m_Layer: 0
-  m_Name: GreenSpawn4
+  m_Name: GreenSpawn1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

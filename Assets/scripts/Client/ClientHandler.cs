@@ -12,11 +12,11 @@ public class ClientHandler : MonoBehaviour
 {
     // Start is called before the first frame update
     Client client = new Client();
-    
+
     PlayersController PC;
     ThreadController TC;
     SceneChanger SC;
-   
+
 
     private void Awake()
     {
@@ -25,13 +25,13 @@ public class ClientHandler : MonoBehaviour
 
     private void StartAsync()
     {
-        
- 
-            bool status = client.FindServer(client);
-            if (status == true)
-            {
-                Debug.Log("connected");
-                Dispatcher.InvokeAsync(() => Starter());
+
+
+        bool status = client.FindServer(client);
+        if (status == true)
+        {
+            Debug.Log("connected");
+            Dispatcher.InvokeAsync(() => Starter());
         }
 
 
@@ -50,7 +50,7 @@ public class ClientHandler : MonoBehaviour
     }
     public void AfterSceneChane()
     {
-       PC = GameObject.Find("PlayersController").GetComponent<PlayersController>();
+        PC = GameObject.Find("PlayersController").GetComponent<PlayersController>();
     }
     private void Start()
     {
@@ -59,7 +59,7 @@ public class ClientHandler : MonoBehaviour
         Thread SocketHandler = new Thread(StartAsync);
         SocketHandler.Start();
         TC.Threads.Add(SocketHandler);
-        
+
     }
     void OnApplicationQuit()
     {
@@ -78,7 +78,7 @@ public class ClientHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void getDice()
@@ -86,16 +86,12 @@ public class ClientHandler : MonoBehaviour
         var t = new Thread(() => { client.GetDice(); });
         TC.Threads.Add(t);
         t.Start();
-        
+
     }
 
-    public void setWaiting()
+    public void SpawnOrMoveQuestion(List<GameObject> spawnedpawns, int dice)
     {
-        SendCommand("WaitForEnd");
-    }
-   public void SpawnOrMoveQuestion(List<GameObject> spawnedpawns, int dice)
-    {
-        var t = new Thread(() => { SpawnOrMoveQuestion_r(spawnedpawns,  dice); });
+        var t = new Thread(() => { SpawnOrMoveQuestion_r(spawnedpawns, dice); });
         TC.Threads.Add(t);
         t.Start();
     }
@@ -110,7 +106,7 @@ public class ClientHandler : MonoBehaviour
     }
     public void SendQuestionMovablePawns(int dice, string command)
     {
-        Debug.LogError(command+" "+dice);
+        Debug.LogError(command + " " + dice);
         SendCommand(command, true, SendQuestionMovablePawns_continue, dice);
     }
 
@@ -120,29 +116,33 @@ public class ClientHandler : MonoBehaviour
         int selected = int.Parse(JsonReply["MovePawn"].ToString());
         int dice = int.Parse(JsonReply["dice"].ToString());
         Dispatcher.Invoke(() => PC.MovePawn(selected, PC.GetPlayerTurn(), dice));
-        PC.EndTurn();
     }
     public JObject WaitForStart()
     {
-            JObject reply = client.ReplyHandler();
+        JObject reply = client.ReplyHandler();
         return reply;
 
     }
 
     public void SendCommand(string cmd, Action func)
     {
-        var t = new Thread(() => { client.CommandHandler(new Cmd(cmd,false, func)); });
+        var t = new Thread(() => { client.CommandHandler(new Cmd(cmd, false, func)); });
         TC.Threads.Add(t);
         t.Start();
     }
 
-    public void SendCommand(string cmd,bool hasReturn, Action<JObject> func)
+    public void SendCommand(string cmd, bool hasReturn, Action<JObject> func)
     {
         var t = new Thread(() => { client.CommandHandler(new Cmd(cmd, hasReturn, func)); });
         TC.Threads.Add(t);
         t.Start();
     }
-
+    public void SendCommandNoReply(string cmd)
+    {
+        var t = new Thread(() => { client.SendCommandNoReply(cmd); });
+        TC.Threads.Add(t);
+        t.Start();
+    }
     public void SendCommand(string cmd)
     {
         var t = new Thread(() => { client.CommandHandler(new Cmd(cmd)); });
